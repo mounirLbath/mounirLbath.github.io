@@ -5,7 +5,7 @@ const page = () => {
   return (
     <div>
       <NavBar currentPath="/projects" />
-      Hey
+      page
     </div>
   );
 };
