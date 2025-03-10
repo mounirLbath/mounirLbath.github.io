@@ -11,7 +11,7 @@ interface Props {
 const TypeText = ({
   sequence,
   repeat = Infinity,
-  style = { fontSize: "2em", display: "inline-block" },
+  style = { fontSize: "2em", display: "inline-block", padding: "0.5em" },
 }: Props) => {
   return (
     <TypeAnimation
