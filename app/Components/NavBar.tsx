@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
-import NavBarButtons from "./NavBarButtons";
+import NavBarButton from "./NavBarButton";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,7 +15,7 @@ const NavBar = () => {
         </div>
         <div className="hidden sm:block sm:ml-6">
           <div className="flex space-x-15">
-            <NavBarButtons toggleMenu={toggleMenu} />
+            <NavBarButton toggleMenu={toggleMenu} />
           </div>
         </div>
         <div className="sm:hidden">
@@ -69,7 +69,7 @@ const NavBar = () => {
         } transition-transform  duration-300 ease-in-out  sm:hidden flex-col mx-10`}
         id="mobile-menu"
       >
-        <NavBarButtons toggleMenu={toggleMenu} />
+        <NavBarButton toggleMenu={toggleMenu} />
       </div>
     </nav>
   );

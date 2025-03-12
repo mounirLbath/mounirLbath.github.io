@@ -6,7 +6,7 @@ interface Props {
   toggleMenu: () => void;
 }
 
-const NavBarButtons = ({ toggleMenu }: Props) => {
+const NavBarButton = ({ toggleMenu }: Props) => {
   const pathname = usePathname();
   const navLinks = [
     { display: "Home", path: "/" },
@@ -34,4 +34,4 @@ const NavBarButtons = ({ toggleMenu }: Props) => {
   );
 };
 
-export default NavBarButtons;
+export default NavBarButton;
