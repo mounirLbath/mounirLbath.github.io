@@ -1,15 +1,17 @@
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface Props {
-  currentPath?: string;
+  toggleMenu: () => void;
 }
 
-const NavBarButtons = ({ currentPath = "/" }: Props) => {
+const NavBarButtons = ({ toggleMenu }: Props) => {
+  const pathname = usePathname();
   const navLinks = [
     { display: "Home", path: "/" },
     { display: "Projects", path: "/projects" },
-    { display: "Useful Links", path: "/a" },
+    { display: "Useful Links", path: "/links" },
     { display: "Other", path: "/a" },
   ];
   return (
@@ -20,8 +22,9 @@ const NavBarButtons = ({ currentPath = "/" }: Props) => {
             href={link.path}
             className={
               "text-lg hover:text-blue-500 duration-300 ease-in-out " +
-              (currentPath === link.path && "text-blue-500")
+              (pathname === link.path && "text-blue-500")
             }
+            onClick={toggleMenu}
           >
             {link.display}
           </Link>

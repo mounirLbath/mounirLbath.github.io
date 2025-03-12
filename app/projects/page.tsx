@@ -2,12 +2,7 @@ import React from "react";
 import NavBar from "../Components/NavBar";
 
 const page = () => {
-  return (
-    <div>
-      <NavBar currentPath="/projects" />
-      page
-    </div>
-  );
+  return <div>page</div>;
 };
 
 export default page;

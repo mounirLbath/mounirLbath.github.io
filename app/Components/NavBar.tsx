@@ -3,11 +3,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import NavBarButtons from "./NavBarButtons";
 
-interface Props {
-  currentPath?: string;
-}
-
-const NavBar = ({ currentPath = "/" }: Props) => {
+const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -19,7 +15,7 @@ const NavBar = ({ currentPath = "/" }: Props) => {
         </div>
         <div className="hidden sm:block sm:ml-6">
           <div className="flex space-x-15">
-            <NavBarButtons currentPath={currentPath} />
+            <NavBarButtons toggleMenu={toggleMenu} />
           </div>
         </div>
         <div className="sm:hidden">
@@ -73,7 +69,7 @@ const NavBar = ({ currentPath = "/" }: Props) => {
         } transition-transform  duration-300 ease-in-out  sm:hidden flex-col mx-10`}
         id="mobile-menu"
       >
-        <NavBarButtons currentPath={currentPath} />
+        <NavBarButtons toggleMenu={toggleMenu} />
       </div>
     </nav>
   );

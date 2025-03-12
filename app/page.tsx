@@ -5,15 +5,11 @@ import Math from "./Components/Math";
 export default function Home() {
   return (
     <>
-      <NavBar currentPath="/" />
       <main className="px-[10%]">
-        <h1 className="font-mono text-3xl p-5">Who am I?</h1>
         <p className="font-black text-3xl">
-          My name is Mounir Lbath. I am a student at Ecole Polytechnique in
-          Paris.
+          Hi, my name is Mounir Lbath.
           <br />
         </p>
-        <h1 className="font-mono text-3xl p-5">What do I like?</h1>
 
         <TypeText
           sequence={[
