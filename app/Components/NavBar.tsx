@@ -8,10 +8,10 @@ const NavBar = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <nav className="sticky top-0 flex-col items-center justify-between  bg-background/40 backdrop-blur-lg z-10 py-4">
+    <nav className=" fixed w-full top-0 flex-col items-center justify-between  bg-background/40 backdrop-blur-lg z-10 py-4">
       <div className="top-0  flex items-center justify-between mx-10">
-        <div className="font-mono font-black text-2xl">
-          <Link href={"/"}>Mounir Lbath</Link>
+        <div className="font-mono font-black text-blue-950 text-2xl">
+          <Link href={"/"}>ML</Link>
         </div>
         <div className="hidden sm:block sm:ml-6">
           <div className="flex space-x-15">

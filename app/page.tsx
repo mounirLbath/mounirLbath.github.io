@@ -5,69 +5,29 @@ import Math from "./Components/Math";
 export default function Home() {
   return (
     <>
-      <main className="px-[10%]">
-        <p className="font-black text-3xl">
-          Hi, my name is Mounir Lbath.
-          <br />
-        </p>
+      <main className="mx-[10%] sm:mx-[20%]">
+        <div className="absolute top-15 left-0 rounded-full w-50 h-50 bg-gradient-to-r from-blue-50 to-blue-400 blur-3xl -z-10"></div>
+        <div className="absolute top-60 left-70 sm:left-90 lg:left-150 rounded-full w-100 h-80 bg-gradient-to-r from-blue-50/50 to-blue-400/50 blur-xl -z-10"></div>
+
+        <div className="mt-[35vh] mb-20">
+          <p className="text-5xl">Hi, my name is</p>
+          <p className="font-mono text-7xl">Mounir Lbath</p>
+        </div>
 
         <TypeText
           sequence={[
             "I love Math.",
             1000,
-            "I love Computer Science.",
+            "I love coding.",
             1000,
             "I love Physics.",
             1000,
+            "I love Problem Solving.",
+            1000,
           ]}
         />
+
         <br />
-        <Math className="text-2xl flex justify-center">
-          {"\\displaystyle{\\frac{\\pi^2}6=\\sum_{i=1}^\\infty \\frac{1}{i^2}}"}
-        </Math>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
-        <h1>Hey</h1>
       </main>
     </>
   );
