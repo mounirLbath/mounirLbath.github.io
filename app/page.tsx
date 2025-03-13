@@ -55,21 +55,22 @@ export default function Home() {
             <LinkButton href="https://www.polytechnique.edu/en" target="blank">
               Ecole Polytechnique
             </LinkButton>{" "}
-            in Paris. I got admitted there after 2 years of preparatory classes
-            at{" "}
+            in Paris. I got admitted there after completing two years of
+            preparatory classes at{" "}
             <LinkButton
               href="https://en.wikipedia.org/wiki/Lyc%C3%A9e_Louis-le-Grand"
               target="blank"
             >
               Louis-Le-Grand
-            </LinkButton>{" "}
-            (intensive science undergraduate program). I am passionate about
-            mathematics, computer science and physics. I love to solve problems
-            and to learn new things. I am currently interested in Machine
-            Learning, Software Engineering, Astrophysics and of course pure
-            math. I&apos;ve been always amazed by how science & technology could
-            enhance people&apos;s lives: I want to take part of that. You can
-            check some of my coolest projects{" "}
+            </LinkButton>
+            {", "}
+            an intensive science undergraduate program. I have a deep passion
+            for mathematics, computer science and physics. I love to solve
+            problems and to learn new things. I am particularly interested in
+            AI, software engineering, quantum computing, astrophysics and pure
+            math. I&apos;ve always been fascinated by how science and technology
+            can improve lives, and I&apos;m eager to contribute to that
+            progress. You can check some of my coolest projects{" "}
             <LinkButton href="/projects">here</LinkButton>.
             <br /> <br />
             My notable achievements include a silver medal at the{" "}
@@ -87,8 +88,7 @@ export default function Home() {
               French National Mathematics Olympiad
             </LinkButton>{" "}
             in 2021. I also got selected for various math, physics and
-            competitive programming camps to prepare for different olympiads. I
-            now volunteer at the{" "}
+            competitive programming camps. I now volunteer at the{" "}
             <LinkButton href="https://maths-olympiques.fr/" target="blank">
               French Olympic Mathematics Preparation
             </LinkButton>{" "}

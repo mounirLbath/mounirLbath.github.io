@@ -39,7 +39,7 @@ const SoftwareTools = () => {
       link: "https://intl.presonus.com/pages/studio-one-pro",
     },
     {
-      logoSrc: "/logos/musescore.png",
+      logoSrc: "/logos/musescore.svg",
       name: "MuseScore",
       link: "https://musescore.org/",
     },
