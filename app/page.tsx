@@ -4,9 +4,6 @@ import TypeText from "./Components/TypeText";
 import Button from "./Components/Button";
 import Title from "./Components/Title";
 import LinkButton from "./Components/LinkButton";
-import NavBarButton from "./Components/NavBarButton";
-import Tool from "./Components/Tool";
-import ToolsDisplay from "./Components/ToolsDisplay";
 import DevTools from "./Components/DevTools";
 import SoftwareTools from "./Components/SoftwareTools";
 
@@ -70,9 +67,9 @@ export default function Home() {
             mathematics, computer science and physics. I love to solve problems
             and to learn new things. I am currently interested in Machine
             Learning, Software Engineering, Astrophysics and of course pure
-            math. I've been always amazed by how science & technology could
-            enhance people's lives: I want to take part of that. You can check
-            some of my coolest projects{" "}
+            math. I&apos;ve been always amazed by how science & technology could
+            enhance people&apos;s lives: I want to take part of that. You can
+            check some of my coolest projects{" "}
             <LinkButton href="/projects">here</LinkButton>.
             <br /> <br />
             My notable achievements include a silver medal at the{" "}
