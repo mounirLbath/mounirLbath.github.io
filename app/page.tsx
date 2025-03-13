@@ -6,6 +6,9 @@ import Title from "./Components/Title";
 import LinkButton from "./Components/LinkButton";
 import NavBarButton from "./Components/NavBarButton";
 import Tool from "./Components/Tool";
+import ToolsDisplay from "./Components/ToolsDisplay";
+import DevTools from "./Components/DevTools";
+import SoftwareTools from "./Components/SoftwareTools";
 
 export default function Home() {
   const sectionRef = useRef<null | HTMLDivElement>(null);
@@ -33,13 +36,13 @@ export default function Home() {
 
             <TypeText
               sequence={[
-                "I love Math.",
+                "I love math.",
                 1000,
                 "I love coding.",
                 1000,
-                "I love Physics.",
+                "I love physics.",
                 1000,
-                "I love Problem Solving.",
+                "I love problem solving.",
                 1000,
               ]}
             />
@@ -64,12 +67,13 @@ export default function Home() {
               Louis-Le-Grand
             </LinkButton>{" "}
             (intensive science undergraduate program). I am passionate about
-            mathematics, computer science and physics. I define myself as a
-            problem solver and I love to learn new things. I am currently
-            interested in Machine Learning, Software Engineering, Astrophysics
-            and of course pure Math. I deeply value the capibility of science &
-            technology to enhance people's lives. You can check some of my
-            coolest projects <LinkButton href="/projects">here</LinkButton>.
+            mathematics, computer science and physics. I love to solve problems
+            and to learn new things. I am currently interested in Machine
+            Learning, Software Engineering, Astrophysics and of course pure
+            math. I've been always amazed by how science & technology could
+            enhance people's lives: I want to take part of that. You can check
+            some of my coolest projects{" "}
+            <LinkButton href="/projects">here</LinkButton>.
             <br /> <br />
             My notable achievements include a silver medal at the{" "}
             <LinkButton
@@ -85,8 +89,9 @@ export default function Home() {
             >
               French National Mathematics Olympiad
             </LinkButton>{" "}
-            in 2021. I also participated in various Math, Physics and coding
-            camps to prepare for different competitions. I now volunteer at the{" "}
+            in 2021. I also got selected for various math, physics and
+            competitive programming camps to prepare for different olympiads. I
+            now volunteer at the{" "}
             <LinkButton href="https://maths-olympiques.fr/" target="blank">
               French Olympic Mathematics Preparation
             </LinkButton>{" "}
@@ -95,7 +100,7 @@ export default function Home() {
               href="https://math.univ-lyon1.fr/~lass/club.html"
               target="blank"
             >
-              Lyon Math circle
+              Lyon Math Circle
             </LinkButton>
             .
           </p>
@@ -103,56 +108,16 @@ export default function Home() {
 
         <div>
           <Title>Tools</Title>
-          <p>Here is a list of some of the tools I use:</p>
-          <br />
-          <div className="flex flex-wrap space-x-3 space-y-3">
-            <Tool
-              logoSrc="/logos/react.svg"
-              name="React"
-              link="https://react.dev/"
-            />
-            <Tool
-              logoSrc="/logos/cpp.svg"
-              name="C++"
-              link="https://cplusplus.com/"
-            />
-            <Tool
-              logoSrc="/logos/js.png"
-              name="JavaScript"
-              link="https://developer.mozilla.org/docs/Web/JavaScript"
-            />
-            <Tool
-              logoSrc="/logos/html.png"
-              name="HTML"
-              link="https://developer.mozilla.org/docs/Web/HTML"
-            />
-            <Tool
-              logoSrc="/logos/php.png"
-              name="PHP"
-              link="https://www.php.net/"
-            />
-            <Tool
-              logoSrc="/logos/css.svg"
-              name="CSS"
-              link="https://developer.mozilla.org/docs/Web/CSS"
-            />
-            <Tool
-              logoSrc="/logos/python.svg"
-              name="Python"
-              link="https://www.python.org/"
-            />
-            <Tool
-              logoSrc="/logos/c_sharp.svg"
-              name="C#"
-              link="https://dotnet.microsoft.com/en-us/languages/csharp"
-            />
-            <Tool
-              logoSrc="/logos/latex.svg"
-              link="https://www.latex-project.org/"
-            />
-            <Tool logoSrc="/logos/ocaml.svg" link="https://ocaml.org/" />
-            <Tool name="SQL" link="https://www.mysql.com/" />
-          </div>
+          <p>Here is a list of some of the development tools I have used:</p>
+          <DevTools />
+          <p>And here are the softwares I use:</p>
+
+          <SoftwareTools />
+        </div>
+
+        <div>
+          <Title>School</Title>
+          <p>Here is a list of the courses I have taken so far:</p>
         </div>
         <div className="py-16"></div>
       </main>
