@@ -15,10 +15,10 @@ const TypeText = ({
 }: Props) => {
   return (
     <TypeAnimation
+      className="text-xl xxsm:text-2xl xsm:text-3xl"
       sequence={sequence}
       wrapper="span"
       speed={50}
-      style={style}
       repeat={repeat}
     />
   );
