@@ -44,7 +44,7 @@ export default function Home() {
               ]}
             />
           </div>
-          <Button onClick={scrollToSection} className="mt-20">
+          <Button onClick={scrollToSection} className="mt-10">
             About me ▼
           </Button>
         </div>
