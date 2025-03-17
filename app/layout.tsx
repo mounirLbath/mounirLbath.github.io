@@ -30,7 +30,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NavBar />
-        <div className="relative overflow-x-hidden">{children}</div>
+        <div className="relative overflow-x-hidden">
+          <main className="mx-[10%] sm:mx-[20%] mt-20">{children}</main>
+        </div>
         <Footer />
       </body>
     </html>
