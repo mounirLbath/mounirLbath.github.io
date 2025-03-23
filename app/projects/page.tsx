@@ -101,7 +101,7 @@ const page = () => {
                 href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
                 target="blank"
               >
-                Conway's game of life
+                Conway&apos;s game of life
               </LinkButton>{" "}
               simulation with a functional GUI.{" "}
             </>
@@ -171,14 +171,14 @@ const page = () => {
                 href="https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion"
                 target="blank"
               >
-                Newton's laws
+                Newton&apos;s laws
               </LinkButton>{" "}
               and{" "}
               <LinkButton
                 target="blank"
                 href="https://en.wikipedia.org/wiki/Euler_method"
               >
-                Euler's method for differential equations.
+                Euler&apos;s method for differential equations.
               </LinkButton>{" "}
               It can be used for many simulations, such as a small basketball
               game you will find on the GitHub repository.
@@ -287,7 +287,7 @@ const page = () => {
               >
                 this page
               </LinkButton>{" "}
-              or directly send the basic "Happy Birthday" gift on{" "}
+              or directly send the basic &quot;Happy Birthday&quot; gift on{" "}
               <LinkButton
                 href="https://mounirlbath.github.io/gift-generator"
                 target="blank"
