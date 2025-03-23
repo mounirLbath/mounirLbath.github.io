@@ -5,7 +5,7 @@ import LinkButton from "../Components/LinkButton";
 const page = () => {
   return (
     <div>
-      <div className="grid gap-5 grid-cols-1 lg:grid-cols-2">
+      <div className="lg:columns-2 gap-5">
         <ProjectTile
           title="Steady Box"
           tags={["Unity", "C#"]}

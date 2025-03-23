@@ -31,8 +31,8 @@ const ProjectTile = ({
   return (
     <HoverDiv
       className={
-        "rounded-4xl border-1 px-5 pb-5 border-gray-300 " +
-        (imageSrc != "" ? "row-span-2" : "")
+        "rounded-4xl border-1 px-5 pb-5 border-gray-300 break-inside-avoid mb-5" +
+        (imageSrc != "" ? "" : "")
       }
     >
       <div className="flex justify-between">
