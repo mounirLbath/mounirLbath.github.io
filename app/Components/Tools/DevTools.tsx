@@ -22,7 +22,11 @@ const DevTools = () => {
     { logoSrc: "/logos/ocaml2.svg", name: "OCaml", link: "https://ocaml.org/" },
 
     { logoSrc: "/logos/react.svg", name: "React", link: "https://react.dev/" },
-
+    {
+      logoSrc: "/logos/flutter.svg",
+      name: "Flutter",
+      link: "https://flutter.dev/",
+    },
     {
       logoSrc: "/logos/html.png",
       name: "HTML",
