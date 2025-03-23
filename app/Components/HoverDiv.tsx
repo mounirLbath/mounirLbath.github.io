@@ -16,7 +16,7 @@ const HoverDiv = ({
 }: Props) => {
   const container = useRef<HTMLDivElement>(null);
 
-  let [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [hover, setHover] = useState(false);
 
   // Initialize mouse position based on current mouse position
