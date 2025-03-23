@@ -1,6 +1,7 @@
 import React from "react";
 import ProjectTile from "../Components/ProjectTile";
 import LinkButton from "../Components/LinkButton";
+import Title from "../Components/Title";
 
 const page = () => {
   return (
