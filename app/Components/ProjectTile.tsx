@@ -32,37 +32,40 @@ const ProjectTile = ({
     <HoverDiv
       className={
         "rounded-4xl border-1 px-5 pb-5 border-gray-300 break-inside-avoid mb-5" +
-        (imageSrc != "" ? "" : "")
+        (imageSrc != "" ? " " : "")
       }
     >
-      <div className="flex justify-between">
-        <Title>{title}</Title>
-        <div className="flex flex-wrap justify-end py-10">
-          {tags.map((v, index) => (
-            <p key={index} className="pl-2">
-              {v}
-            </p>
-          ))}
+      <div className="flex flex-col justify-between h-[100%]">
+        <div id="core">
+          <div className="flex justify-between">
+            <Title>{title}</Title>
+            <div className="flex flex-wrap justify-end py-10">
+              {tags.map((v, index) => (
+                <p key={index} className="pl-2">
+                  {v}
+                </p>
+              ))}
+            </div>
+          </div>
+          {imageSrc != "" ? (
+            <div className="relative h-50 mb-5">
+              <Image
+                src={imageSrc}
+                alt={title + " illustration."}
+                fill={true}
+                quality={100}
+                objectFit="cover"
+              />
+            </div>
+          ) : null}
+          <p className="px-10">{description}</p>
         </div>
-      </div>
-      {imageSrc != "" ? (
-        <div className="relative h-50 mb-5">
-          <Image
-            src={imageSrc}
-            alt={title + " illustration."}
-            fill={true}
-            quality={100}
-            objectFit="cover"
-          />
+        <div id="buttons" className="mt-5 flex space-x-5 align-bottom">
+          {ghLink != "" ? <GithubLogo link={ghLink} /> : null}
+          {link != "" ? <LinkLogo link={link} /> : null}
+          {websiteLink != "" ? <WebLogo link={websiteLink} /> : null}
+          {youtubeLink != "" ? <YoutubeLogo link={youtubeLink} /> : null}
         </div>
-      ) : null}
-      <p className="px-10">{description}</p>
-
-      <div className="mt-5 flex space-x-5 align-bottom">
-        {ghLink != "" ? <GithubLogo link={ghLink} /> : null}
-        {link != "" ? <LinkLogo link={link} /> : null}
-        {websiteLink != "" ? <WebLogo link={websiteLink} /> : null}
-        {youtubeLink != "" ? <YoutubeLogo link={youtubeLink} /> : null}
       </div>
     </HoverDiv>
   );

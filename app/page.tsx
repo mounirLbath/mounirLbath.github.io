@@ -89,6 +89,13 @@ export default function Home() {
         </p>
       </div>
 
+      <div id="projects">
+        <Title>My projects</Title>{" "}
+        <LinkButton className="" href="/projects">
+          Check out out some of my best projects here!
+        </LinkButton>
+      </div>
+
       <div id="tools">
         <Title>Tools</Title>
         <p>Here is a list of some of the development tools I have used:</p>
