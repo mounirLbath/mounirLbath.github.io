@@ -24,7 +24,7 @@ const page = () => {
           return (
             <Image
               key={index}
-              src={"https://drive.google.com/uc?id=" + im.id}
+              src={"https://drive.google.com/thumbnail?sz=w1000&id=" + im.id}
               alt={im.description}
               quality={100}
               width={1000}

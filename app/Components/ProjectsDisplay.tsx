@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import ProjectTile from "./ProjectTile";
 import LinkButton from "./LinkButton";
-import NavBarButton from "./NavBarButton";
 
 interface Props {
   nbToShow?: number;
