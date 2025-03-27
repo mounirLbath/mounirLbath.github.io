@@ -1,5 +1,6 @@
 import React from "react";
 import ImageTile from "../Components/ImageTile";
+import Title from "../Components/Title";
 
 const page = () => {
   const images = [
@@ -8,7 +9,7 @@ const page = () => {
       description: "Alps at sunset",
       location: "Lac d'Anterne, French Alps",
       date: "August 2024",
-      properties: ["Nikon D3400", "", "f/3.5"],
+      properties: ["Nikon D3400", "55mm", "ISO-100", "f/5.6"],
     },
     {
       id: "1-qZ63doe9Lppr2QgW8oBWjlH2jcsYKwH",
@@ -21,12 +22,23 @@ const page = () => {
     {
       id: "11bDEUQ6-_9j4ne2ckhD2Iu3nyI9TKt1m",
       description: "Mont blanc",
+      location: "Col d'Anterne, French Alps",
+      properties: ["Nikon D3400", "38mm", "ISO-100", "f/9"],
+
+      date: "August 2024",
     },
   ];
 
   return (
     <>
-      <div className="grid lg:grid-cols-2 gap-6 gap-y-5">
+      <Title>Photography</Title>
+      <p>
+        I've loved photography ever since middle school, especially capturing
+        the Milky Way. Enjoy a selection of my best photos, some of which were
+        taken together with my brother! Click on the pictures for more
+        information!
+      </p>
+      <div className="grid mt-10 lg:grid-cols-2 gap-6 gap-y-5">
         {images.map((im, index) => {
           return (
             <ImageTile

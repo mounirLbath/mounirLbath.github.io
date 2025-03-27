@@ -26,11 +26,11 @@ const ImageTile: React.FC<ImageTileProps> = ({
       <div className="relative overflow-hidden group">
         <Image
           src={"https://drive.google.com/thumbnail?sz=w1000&id=" + id}
-          alt={description}
+          alt={description + " (" + location + ")"}
           quality={100}
           width={1000}
           height={100}
-          className="w-full h-auto cursor-pointer transform transition-transform duration-300 ease-in-out group-hover:scale-110"
+          className="w-full h-auto cursor-pointer transform transition-transform duration-300 ease-in-out lg:group-hover:scale-110"
           priority={index < 4}
           onClick={() => {
             setDescriptionOpen(!descriptionOpen);
