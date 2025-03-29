@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import ImageTile from "../Components/ImageTile";
 import Title from "../Components/Title";
 
