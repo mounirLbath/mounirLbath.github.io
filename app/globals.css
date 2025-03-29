@@ -102,13 +102,23 @@ ul ul, ol ol, ul ol, ol ul {
   list-style-type: circle; /* Change nested list style */
 }
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 20px 0;
+.katex-display
+{
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
-table, th, td {
+table {
+  display: block;
+  border-collapse: collapse;
+  overflow-x: auto;
+  white-space: nowrap;
+  margin: 20px 0;
+  width:100%;
+  
+}
+
+th, td {
   border: 1px solid #ddd;
 }
 
@@ -132,4 +142,9 @@ tr:nth-child(even) {
 
 .markdown a:hover {
   color: var(--color-blue-900); /* Equivalent to hover:text-blue-900 */
+}
+.markdown{
+  max-width: 100%;  /* Ensures content doesn't overflow horizontally */
+  margin: 0 auto;   /* Centers the content */
+  padding: 15px;    /* Adds some space around content */
 }

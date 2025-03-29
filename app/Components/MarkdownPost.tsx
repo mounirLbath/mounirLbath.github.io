@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Children } from "react";
 import { promises as fs } from "fs";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
