@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import ImageTile from "../Components/ImageTile";
 import Title from "../Components/Title";
-import MarkdownPost from "../Components/MarkdownPost";
 
 const page = () => {
   const images = [
@@ -34,10 +33,10 @@ const page = () => {
     <>
       <Title>Photography</Title>
       <p>
-        I've loved photography ever since middle school, especially capturing
-        the Milky Way. Enjoy a selection of my best photos, some of which were
-        taken together with my brother! Click on the pictures for more
-        information!
+        I&apos;ve loved photography ever since middle school, especially
+        capturing the Milky Way. Enjoy a selection of my best photos, some of
+        which were taken together with my brother! Click on the pictures for
+        more information!
       </p>
       <div className="grid mt-10 lg:grid-cols-2 gap-6 gap-y-5">
         {images.map((im, index) => {
