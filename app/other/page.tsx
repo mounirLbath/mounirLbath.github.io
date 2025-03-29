@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ImageTile from "../Components/ImageTile";
 import Title from "../Components/Title";
+import MarkdownPost from "../Components/MarkdownPost";
 
 const page = () => {
   const images = [

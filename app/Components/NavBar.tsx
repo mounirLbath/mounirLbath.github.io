@@ -8,7 +8,7 @@ const NavBar = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <nav className=" fixed w-full top-0 flex-col items-center justify-between  bg-background/40 backdrop-blur-lg z-10 py-4">
+    <nav className="fixed w-full top-0 flex-col items-center justify-between  bg-background/40 backdrop-blur-lg z-10 py-4">
       <div className="top-0  flex items-center justify-between mx-10">
         <div className="font-mono font-black text-blue-950 text-2xl">
           <Link href={"/"}>ML</Link>

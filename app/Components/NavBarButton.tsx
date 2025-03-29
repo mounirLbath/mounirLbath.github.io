@@ -11,7 +11,7 @@ const NavBarButton = ({ toggleMenu }: Props) => {
   const navLinks = [
     { display: "Home", path: "/" },
     { display: "Projects", path: "/projects" },
-    { display: "Useful Links", path: "/links" },
+    { display: "Posts", path: "/posts" },
     { display: "Other", path: "/other" },
   ];
   return (

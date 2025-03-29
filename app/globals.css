@@ -23,3 +23,113 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Basic reset */
+.markdown h1,.markdown h2, .markdown h3,.markdown h4,.markdown h5,.markdown h6 {
+
+  padding: 0;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+
+}
+
+/* h1 - Largest header */
+.markdown h1 {
+  font-size: 2.5rem; /* 40px */
+  margin-bottom: 1rem;
+}
+/* h2 - Slightly smaller than h1 */
+.markdown h2 {
+  font-size: 1.6rem; /* 32px */
+  margin-bottom: 0.75rem;
+}
+
+/* h3 */
+.markdown h3 {
+  font-size: 1.3rem; /* 28px */
+  margin-bottom: 0.5rem;
+}
+
+/* h4 */
+.markdown h4 {
+  font-size: 1.25rem; /* 24px */
+  margin-bottom: 0.25rem;
+}
+
+/* h5 */
+.markdown h5 {
+  font-size: 1.1rem; /* 20px */
+  margin-bottom: 0.25rem;
+}
+
+/* h6 */
+.markdown h6 {
+  font-size: 1rem; /* 16px */
+  margin-bottom: 0.25rem;
+}
+
+.markdown p {
+  margin-bottom: 1rem;
+}
+
+/* Apply default styling to unordered and ordered lists */
+ul, ol {
+  margin: 1em 0;
+  padding-left: 1.5rem;
+}
+
+/* Unordered List (Bullets) */
+ul {
+  list-style-type: disc;
+}
+
+/* Ordered List (Numbers) */
+ol {
+  list-style-type: decimal;
+}
+
+/* Improve readability of list items */
+li {
+  margin-bottom: 0.5em;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Nested Lists */
+ul ul, ol ol, ul ol, ol ul {
+  margin-top: 0.5em;
+  margin-left: 1.5rem;
+  list-style-type: circle; /* Change nested list style */
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.markdown a{
+  color: var(--color-blue-500)
+}
+
+.markdown a:hover {
+  color: var(--color-blue-900); /* Equivalent to hover:text-blue-900 */
+}
