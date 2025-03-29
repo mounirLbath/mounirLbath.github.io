@@ -1,6 +1,5 @@
 import React from "react";
 import { promises as fs } from "fs";
-import { unified } from "unified";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
@@ -22,14 +21,15 @@ const Page = async ({ postName }: Props) => {
     return (
       <div className="markdown">
         <ReactMarkdown
-          children={file}
           remarkPlugins={[[remarkMath], remarkGfm]}
           rehypePlugins={[rehypeKatex, rehypeSlug, rehypeAutolinkHeadings]}
-        />
+        >
+          {file}
+        </ReactMarkdown>
       </div>
     );
   } catch {
-    return <h1>Couldn't load file.</h1>;
+    return <h1>Couldn&apos;t load file.</h1>;
   }
 };
 
