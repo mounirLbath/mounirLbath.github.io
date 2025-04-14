@@ -48,9 +48,11 @@ const ImageTile: React.FC<ImageTileProps> = ({
           >
             <div className="flex h-full flex-col justify-between">
               <div>
-                <p className="font-mono text-2xl">{description}</p>
+                <p className="font-mono text-xl sm:text-2xl">{description}</p>
                 {location != null && location != "" ? (
-                  <p className="font-mono text-2xl">{"(" + location + ")"}</p>
+                  <p className="font-mono text-lg sm:text-xl">
+                    {"(" + location + ")"}
+                  </p>
                 ) : (
                   ""
                 )}
@@ -59,7 +61,7 @@ const ImageTile: React.FC<ImageTileProps> = ({
                 {properties != null && properties.length > 0 ? (
                   <div className="flex gap-5">
                     {properties.map((v, index) => (
-                      <p key={index} className="">
+                      <p key={index} className="text-xs sm:text-base">
                         {v}
                       </p>
                     ))}

@@ -27,6 +27,14 @@ const page = () => {
 
       date: "August 2024",
     },
+    {
+      id: "1AGDzreqxPjnPwi-gIh_BuvRCMvnJ_Wv0",
+      description: "Road in Nikko, Japan",
+      location: "Nikko, Japan",
+      properties: ["Nikon D3400", "55mm", "ISO-200", "f/5.6"],
+
+      date: "July 2023 (during IPhO 2023)",
+    },
   ];
 
   return (

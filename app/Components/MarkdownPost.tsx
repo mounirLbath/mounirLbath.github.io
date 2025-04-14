@@ -15,7 +15,7 @@ interface Props {
 const Page = async ({ postName }: Props) => {
   try {
     const file = await fs.readFile(
-      process.cwd() + "/public/posts/" + postName + ".md",
+      process.cwd() + "/public/posts/" + postName,
       "utf8"
     );
     return (

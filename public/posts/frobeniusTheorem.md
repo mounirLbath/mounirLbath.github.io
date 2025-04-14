@@ -212,7 +212,7 @@ A character is any function in $\mathbb{C}^G$ that is the character of some repr
   $$
   so that, since the eigenvalues lie in $U_{|G|}$,
   $$
-  \chi(g^{-1})=\lambda_1^{-1}+\cdots+\lambda_d^{-1}=\lambda_1+\cdots+\lambda_d=\chi(g).
+  \chi(g^{-1})=\lambda_1^{-1}+\cdots+\lambda_d^{-1}=\overline{\lambda_1+\cdots+\lambda_d}=\overline{\chi(g)}.
   $$
 - Using the notations of Example 4, one has
   $$

@@ -1,14 +1,14 @@
 import React, { Suspense } from "react";
+import PostButtons from "../Components/PostButtons";
 import MarkdownPost from "../Components/MarkdownPost";
 
-const page = () => {
+const page = async () => {
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
-        <MarkdownPost postName="frobeniusTheorem" />
-
-        <a href="#">Back to top </a>
+        <PostButtons />
       </Suspense>
+      <MarkdownPost postName={"test.md"} />;<a href="#">Back to top </a>
     </div>
   );
 };

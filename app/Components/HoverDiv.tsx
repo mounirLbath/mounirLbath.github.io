@@ -6,6 +6,7 @@ interface Props {
   className?: string;
   colorCenter?: string;
   colorOutline?: string;
+  onClick?: () => void;
 }
 
 const HoverDiv = ({
@@ -13,6 +14,7 @@ const HoverDiv = ({
   className = "",
   colorCenter = "rgba(0,0,0,0.09)",
   colorOutline = "white",
+  onClick = () => {},
 }: Props) => {
   const container = useRef<HTMLDivElement>(null);
 
@@ -56,6 +58,7 @@ const HoverDiv = ({
           ? `radial-gradient(circle at ${mousePos.x}px ${mousePos.y}px, ${colorCenter} 0%, ${colorOutline} 100%)`
           : "white",
       }}
+      onClick={onClick}
     >
       {children}
     </div>
