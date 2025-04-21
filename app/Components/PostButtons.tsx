@@ -4,7 +4,7 @@ import React from "react";
 import PostButton from "./PostButton";
 
 const PostButtons = async () => {
-  const directoryPath = path.join(__dirname, "../../../../public/posts/");
+  const directoryPath = path.join(__dirname, "../../../../public/postEntries/");
 
   try {
     const files = await readdir(directoryPath);
