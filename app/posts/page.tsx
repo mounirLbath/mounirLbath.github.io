@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import PostButtons from "../Components/PostButtons";
+import PostButtons from "../Components/PostComponents/PostButtons";
 
 const page = async () => {
   return (

@@ -1,5 +1,5 @@
 import LinkButton from "@/app/Components/LinkButton";
-import MarkdownPost from "@/app/Components/MarkdownPost";
+import MarkdownPost from "@/app/Components/PostComponents/MarkdownPost";
 import React from "react";
 
 interface Props {
@@ -12,7 +12,9 @@ const page = async ({ params }: Props) => {
     <div>
       <LinkButton href="/posts">&#10554; Back to Posts</LinkButton>
       <MarkdownPost postName={postName} />
-      <LinkButton href="#">Back to top </LinkButton>
+      <a className="text-blue-500 hover:text-blue-900 " href="#">
+        Back to top{" "}
+      </a>
     </div>
   );
 };

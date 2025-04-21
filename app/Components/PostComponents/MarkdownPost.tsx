@@ -7,6 +7,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import "katex/dist/katex.min.css"; // Import KaTeX styles
+import ReadMdPost from "./ReadMdPost";
 
 interface Props {
   postName: string;
@@ -14,17 +15,18 @@ interface Props {
 
 const Page = async ({ postName }: Props) => {
   try {
-    const file = await fs.readFile(
-      process.cwd() + "/public/postEntries/" + postName + ".md",
-      "utf8"
-    );
+    const { data, content } = await ReadMdPost(postName);
     return (
       <div className="markdown">
         <ReactMarkdown
           remarkPlugins={[[remarkMath], remarkGfm]}
           rehypePlugins={[rehypeKatex, rehypeSlug, rehypeAutolinkHeadings]}
         >
-          {file}
+          {`# ${data.title != undefined ? data.title : ""} \n ${
+            data.author != undefined ? "*" + data.author + "*, " : ""
+          } ${
+            data.date != undefined ? "*" + data.date + "*" : ""
+          } \n ${content}`}
         </ReactMarkdown>
       </div>
     );
