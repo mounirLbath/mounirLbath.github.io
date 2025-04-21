@@ -6,7 +6,7 @@ import Link from "next/link";
 
 interface Props {
   file: {
-    data: { [key: string]: any };
+    data: { [key: string]: string };
     content: string;
     postName: string;
   };

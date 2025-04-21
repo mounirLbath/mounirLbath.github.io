@@ -31,7 +31,7 @@ const PostButtons = async () => {
         })}
       </div>
     );
-  } catch (err) {
+  } catch {
     return <h1>Couldn&apos;t load file.</h1>;
   }
 };
