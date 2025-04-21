@@ -10,8 +10,8 @@ interface Props {
 // Generate static params for the dynamic route
 export async function generateStaticParams() {
   const posts = await GetAllPostNames();
-  return posts.map((post) => ({
-    postName: post,
+  return posts.map((postName) => ({
+    postName: postName,
   }));
 }
 

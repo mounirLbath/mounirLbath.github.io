@@ -8,8 +8,7 @@ const PostButtons = async () => {
     const fileNames = await GetAllPostNames();
 
     const files = await Promise.all(
-      fileNames.map(async (file) => {
-        const postName = file.replace(/\.md$/, "");
+      fileNames.map(async (postName) => {
         const { data, content } = await ReadMdPost(postName);
         return { postName, data, content };
       })

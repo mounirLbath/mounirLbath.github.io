@@ -1,15 +1,15 @@
 import { readdir } from "fs/promises";
-import path from "path";
 
 const GetAllPostNames = async () => {
-  const directoryPath = path.join(
-    __dirname,
-    "../../../../../public/postEntries/"
-  );
-
   try {
-    const fileNames = await readdir(directoryPath);
-    return fileNames;
+    const fileNames = await readdir(
+      process.cwd() + "/public/postEntries/",
+      "utf8"
+    );
+    const files = fileNames.map((file) => {
+      return file.replace(/\.md$/, "");
+    });
+    return files;
   } catch {
     return []; // Return an empty array if there's an error
   }
