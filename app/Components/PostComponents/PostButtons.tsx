@@ -1,17 +1,12 @@
-import { readdir } from "fs/promises";
-import path from "path";
 import React from "react";
 import PostButton from "./PostButton";
 import ReadMdPost from "./ReadMdPost";
+import GetAllPostNames from "./GetAllPostNames";
 
 const PostButtons = async () => {
-  const directoryPath = path.join(
-    __dirname,
-    "../../../../../public/postEntries/"
-  );
-
   try {
-    const fileNames = await readdir(directoryPath);
+    const fileNames = await GetAllPostNames();
+
     const files = await Promise.all(
       fileNames.map(async (file) => {
         const postName = file.replace(/\.md$/, "");

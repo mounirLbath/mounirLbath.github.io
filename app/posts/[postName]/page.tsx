@@ -1,9 +1,18 @@
 import LinkButton from "@/app/Components/LinkButton";
+import GetAllPostNames from "@/app/Components/PostComponents/GetAllPostNames";
 import MarkdownPost from "@/app/Components/PostComponents/MarkdownPost";
 import React from "react";
 
 interface Props {
   params: Promise<{ postName: string }>;
+}
+
+// Generate static params for the dynamic route
+export async function generateStaticParams() {
+  const posts = await GetAllPostNames();
+  return posts.map((post) => ({
+    postName: post,
+  }));
 }
 
 export const dynamic = "force-static";
