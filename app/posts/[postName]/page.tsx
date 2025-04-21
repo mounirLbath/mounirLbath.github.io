@@ -6,6 +6,9 @@ interface Props {
   params: Promise<{ postName: string }>;
 }
 
+export const dynamic = "force-static";
+export const revalidate = 3600;
+
 const page = async ({ params }: Props) => {
   const postName = (await params).postName;
   return (
