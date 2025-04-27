@@ -142,9 +142,11 @@ export default function Home() {
           <li>Computer Science</li>
           <ul className="list-disc list-inside pl-5">
             <li>Algorithms and Data Structures</li>
+            <li>Object Oriented Programming</li>
+            <li>Functional Programming</li>
             <li>Machine Learning</li>
-            <li>Automata Theory</li>
             <li>Databases</li>
+            <li>Introduction Automata Theory</li>
           </ul>
 
           <li>Physics</li>
