@@ -28,7 +28,7 @@ const page = () => {
       date: "August 2024",
     },
     {
-      id: "1AGDzreqxPjnPwi-gIh_BuvRCMvnJ_Wv0",
+      id: "1Rxg5DtA94E0HDeAJ04vLPiI3-unvdbQg",
       description: "Road in Nikko, Japan",
       location: "Nikko, Japan",
       properties: ["Nikon D3400", "55mm", "ISO-200", "f/5.6"],

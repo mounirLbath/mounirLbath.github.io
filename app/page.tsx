@@ -137,7 +137,7 @@ export default function Home() {
             <li>Galois Theory</li>
             <li>Complex Analysis</li>
             <li>Topology</li>
-            <li>Olympic Geometry</li>
+            <li>Olympic Math (Geometry, Combinatorics, ...)</li>
           </ul>
           <li>Computer Science</li>
           <ul className="list-disc list-inside pl-5">
@@ -146,7 +146,7 @@ export default function Home() {
             <li>Functional Programming</li>
             <li>Machine Learning</li>
             <li>Databases</li>
-            <li>Introduction Automata Theory</li>
+            <li>Introduction to Automata Theory</li>
           </ul>
 
           <li>Physics</li>
