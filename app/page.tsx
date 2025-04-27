@@ -53,11 +53,10 @@ export default function Home() {
           an intensive science undergraduate program. I have a deep passion for
           mathematics, computer science and physics. I love to solve problems
           and to learn new things. I am particularly interested in AI, software
-          engineering, quantum computing, astrophysics and pure math. I&apos;ve
-          always been fascinated by how science and technology can improve
-          lives, and I&apos;m eager to contribute to that progress. You can
-          check some of my coolest projects{" "}
-          <LinkButton href="/projects">here</LinkButton>.
+          engineering, quantum computing and pure math. I&apos;ve always been
+          fascinated by how science and technology can improve lives, and
+          I&apos;m eager to contribute to that progress. You can check some of
+          my coolest projects <LinkButton href="/projects">here</LinkButton>.
           <br /> <br />
           My notable achievements include a silver medal at the{" "}
           <LinkButton
@@ -95,7 +94,23 @@ export default function Home() {
           Check out out some of my best projects here!
         </LinkButton>
       </div>
-
+      <div id="contactMe">
+        <Title>Contact me</Title>
+        You can reach out to me on{" "}
+        <LinkButton
+          href="https://www.linkedin.com/in/mounir-lbath/"
+          target="blank"
+        >
+          LinkedIn
+        </LinkButton>{" "}
+        or{" "}
+        <LinkButton
+          href="mailto:mounir.lbath.2024@polytechnique.org"
+          target="blank"
+        >
+          by email.
+        </LinkButton>
+      </div>
       <div id="tools">
         <Title>Tools</Title>
         <p>Here is a list of some of the development tools I have used:</p>
@@ -107,7 +122,41 @@ export default function Home() {
 
       <div id="school">
         <Title>School</Title>
-        <p>Here is a list of the courses I have taken so far:</p>
+        <p>
+          Here is a list of the courses I have taken or subjects I have studied
+          so far:
+        </p>
+        <ul className="list-disc list-inside pl-5">
+          <li>Mathematics</li>
+          <ul className="list-disc list-inside pl-5">
+            <li>Linear Algebra</li>
+            <li>Probability and Statistics</li>
+            <li>Real Analysis</li>
+            <li>Number Theory</li>
+
+            <li>Galois Theory</li>
+            <li>Complex Analysis</li>
+            <li>Topology</li>
+            <li>Olympic Geometry</li>
+          </ul>
+          <li>Computer Science</li>
+          <ul className="list-disc list-inside pl-5">
+            <li>Algorithms and Data Structures</li>
+            <li>Machine Learning</li>
+            <li>Automata Theory</li>
+            <li>Databases</li>
+          </ul>
+
+          <li>Physics</li>
+          <ul className="list-disc list-inside pl-5">
+            <li>Mechanics</li>
+            <li>Quantum Mechanics</li>
+            <li>Electromagnetism</li>
+            <li>Thermodynamics</li>
+            <li>Optics</li>
+            <li>Special Relativity (IPhO level)</li>
+          </ul>
+        </ul>
       </div>
     </>
   );

@@ -10,6 +10,11 @@ const DevTools = () => {
       link: "https://www.python.org/",
     },
     {
+      logoSrc: "/logos/java.svg",
+      name: "Java",
+      link: "https://www.oracle.com/java/",
+    },
+    {
       logoSrc: "/logos/js.png",
       name: "JavaScript",
       link: "https://developer.mozilla.org/docs/Web/JavaScript",
