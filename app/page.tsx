@@ -41,8 +41,8 @@ export default function Home() {
           <LinkButton href="https://www.polytechnique.edu/en" target="blank">
             Ecole Polytechnique
           </LinkButton>{" "}
-          in Paris. I got admitted there after completing two years of
-          preparatory classes at{" "}
+          in Paris. I was accepted there after passing a highly competitive
+          entrance exam following two years of preparatory classes at{" "}
           <LinkButton
             href="https://en.wikipedia.org/wiki/Lyc%C3%A9e_Louis-le-Grand"
             target="blank"
@@ -51,12 +51,11 @@ export default function Home() {
           </LinkButton>
           {", "}
           an intensive science undergraduate program. I have a deep passion for
-          mathematics, computer science and physics. I love to solve problems
-          and to learn new things. I am particularly interested in AI, software
-          engineering, quantum computing and pure math. I&apos;ve always been
-          fascinated by how science and technology can improve lives, and
-          I&apos;m eager to contribute to that progress. You can check some of
-          my coolest projects <LinkButton href="/projects">here</LinkButton>.
+          computer science, mathematics and physics. I love to solve problems
+          and to learn new things. I&apos;ve always been fascinated by how
+          science and technology can improve lives, and I&apos;m eager to
+          contribute to that progress. You can check some of my coolest projects{" "}
+          <LinkButton href="/projects">here</LinkButton>.
           <br /> <br />
           My notable achievements include a silver medal at the{" "}
           <LinkButton
@@ -72,8 +71,8 @@ export default function Home() {
           >
             French National Mathematics Olympiad
           </LinkButton>{" "}
-          in 2021. I also got selected for various math, physics and competitive
-          programming camps. I now volunteer at the{" "}
+          in 2021. I also got selected for various competitive programming, math
+          and physics camps. I now volunteer at the{" "}
           <LinkButton href="https://maths-olympiques.fr/" target="blank">
             French Olympic Mathematics Preparation
           </LinkButton>{" "}
@@ -127,6 +126,15 @@ export default function Home() {
           so far:
         </p>
         <ul className="list-disc list-inside pl-5">
+          <li>Computer Science</li>
+          <ul className="list-disc list-inside pl-5">
+            <li>Algorithms and Data Structures</li>
+            <li>Object Oriented Programming</li>
+            <li>Functional Programming</li>
+            <li>Machine Learning</li>
+            <li>Databases</li>
+            <li>Introduction to Automata Theory</li>
+          </ul>
           <li>Mathematics</li>
           <ul className="list-disc list-inside pl-5">
             <li>Linear Algebra</li>
@@ -139,15 +147,6 @@ export default function Home() {
             <li>Topology</li>
             <li>Olympic Math (Geometry, Combinatorics, ...)</li>
           </ul>
-          <li>Computer Science</li>
-          <ul className="list-disc list-inside pl-5">
-            <li>Algorithms and Data Structures</li>
-            <li>Object Oriented Programming</li>
-            <li>Functional Programming</li>
-            <li>Machine Learning</li>
-            <li>Databases</li>
-            <li>Introduction to Automata Theory</li>
-          </ul>
 
           <li>Physics</li>
           <ul className="list-disc list-inside pl-5">
@@ -157,6 +156,10 @@ export default function Home() {
             <li>Thermodynamics</li>
             <li>Optics</li>
             <li>Special Relativity (IPhO level)</li>
+          </ul>
+          <li>Economics</li>
+          <ul className="list-disc list-inside pl-5">
+            <li>Introduction to microeconomics and macroeconomics</li>
           </ul>
         </ul>
       </div>
