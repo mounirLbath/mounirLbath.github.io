@@ -2,9 +2,6 @@
 import React, { useState } from "react";
 import ProjectTile from "./ProjectTile";
 import LinkButton from "./LinkButton";
-import { time } from "console";
-import { link } from "fs";
-import { deserialize } from "v8";
 
 interface Props {
   nbToShow?: number;
