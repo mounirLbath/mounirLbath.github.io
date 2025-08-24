@@ -90,7 +90,7 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
       tags: ["NextJS", "Supabase", "Tailwind"],
       imageSrc: "/projects/smile.png",
       link: "https://smile-counter.com",
-      description: <>A simple web app to share and spreads smiles!</>,
+      description: <>A simple web app to share and spread smiles!</>,
     },
 
     {
