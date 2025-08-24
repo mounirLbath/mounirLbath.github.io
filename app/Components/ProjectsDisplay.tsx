@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import ProjectTile from "./ProjectTile";
 import LinkButton from "./LinkButton";
+import { time } from "console";
+import { link } from "fs";
+import { deserialize } from "v8";
 
 interface Props {
   nbToShow?: number;
@@ -86,53 +89,13 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
       ),
     },
     {
-      title: "Minesweeper",
-      tags: ["Python", "Pygame", "OOP"],
-      imageSrc: "/projects/minesweeper.png",
-      ghLink: "https://github.com/mounirLbath/Minesweeper-game",
-      description: <>A minesweeper game.</>,
+      title: "Smile Counter",
+      tags: ["NextJS", "Supabase", "Tailwind"],
+      imageSrc: "/projects/smile.png",
+      link: "https://smile-counter.com",
+      description: <>A simple web app to share and spreads smiles!</>,
     },
-    {
-      title: "Conway's Game of Life",
-      tags: ["Python", "Pygame"],
-      imageSrc: "/projects/conway.png",
-      ghLink: "https://github.com/mounirLbath/Conway_game_of_life",
-      description: (
-        <>
-          <LinkButton
-            href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
-            target="blank"
-          >
-            Conway&apos;s game of life
-          </LinkButton>{" "}
-          simulation with a functional GUI.{" "}
-        </>
-      ),
-    },
-    {
-      title: "Raytracer",
-      tags: ["Python", "OOP"],
-      imageSrc: "/projects/BallAnimation.gif",
-      ghLink: "https://github.com/mounirLbath/Raytracer",
-      description: (
-        <>
-          A{" "}
-          <LinkButton
-            target="blank"
-            href="https://en.wikipedia.org/wiki/Ray_tracing_(graphics)"
-          >
-            raytracer
-          </LinkButton>{" "}
-          built from scratch with the help of{" "}
-          <LinkButton
-            target="blank"
-            href="https://perso.liris.cnrs.fr/nicolas.bonneel/ENS.html"
-          >
-            this course (number II).
-          </LinkButton>
-        </>
-      ),
-    },
+
     {
       title: "Multiplayer Agar.io",
       tags: ["Python", "Sockets", "OOP"],
@@ -154,32 +117,6 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
             youtube video
           </LinkButton>
           .
-        </>
-      ),
-    },
-    {
-      title: "Physics Engine",
-      tags: ["Python", "Pygame", "OOP"],
-      ghLink: "https://github.com/mounirLbath/Physics_Engine",
-      imageSrc: "/projects/physics_engine.png",
-      description: (
-        <>
-          A Physics engine built from scratch using{" "}
-          <LinkButton
-            href="https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion"
-            target="blank"
-          >
-            Newton&apos;s laws
-          </LinkButton>{" "}
-          and{" "}
-          <LinkButton
-            target="blank"
-            href="https://en.wikipedia.org/wiki/Euler_method"
-          >
-            Euler&apos;s method for differential equations.
-          </LinkButton>{" "}
-          It can be used for many simulations, such as a small basketball game
-          you will find on the GitHub repository.
         </>
       ),
     },
@@ -208,22 +145,108 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
       ),
     },
     {
-      title: "Snake",
-      tags: ["C++"],
-      ghLink: "https://github.com/mounirLbath/snake",
+      title: "Raytracer",
+      tags: ["Python", "OOP"],
+      imageSrc: "/projects/BallAnimation.gif",
+      ghLink: "https://github.com/mounirLbath/Raytracer",
       description: (
         <>
           A{" "}
           <LinkButton
-            href="https://en.wikipedia.org/wiki/Snake_(video_game_genre)"
             target="blank"
+            href="https://en.wikipedia.org/wiki/Ray_tracing_(graphics)"
           >
-            Snake
+            raytracer
           </LinkButton>{" "}
-          console implementation in C++.
+          built from scratch with the help of{" "}
+          <LinkButton
+            target="blank"
+            href="https://perso.liris.cnrs.fr/nicolas.bonneel/ENS.html"
+          >
+            this course (number II).
+          </LinkButton>
         </>
       ),
     },
+
+    {
+      title: "Physics Engine",
+      tags: ["Python", "Pygame", "OOP"],
+      ghLink: "https://github.com/mounirLbath/Physics_Engine",
+      imageSrc: "/projects/physics_engine.png",
+      description: (
+        <>
+          A Physics engine built from scratch using{" "}
+          <LinkButton
+            href="https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion"
+            target="blank"
+          >
+            Newton&apos;s laws
+          </LinkButton>{" "}
+          and{" "}
+          <LinkButton
+            target="blank"
+            href="https://en.wikipedia.org/wiki/Euler_method"
+          >
+            Euler&apos;s method for differential equations.
+          </LinkButton>{" "}
+          It can be used for many simulations, such as a small basketball game
+          you will find on the GitHub repository.
+        </>
+      ),
+    },
+    {
+      title: "Minesweeper",
+      tags: ["Python", "Pygame", "OOP"],
+      imageSrc: "/projects/minesweeper.png",
+      ghLink: "https://github.com/mounirLbath/Minesweeper-game",
+      description: <>A minesweeper game.</>,
+    },
+    {
+      title: "Conway's Game of Life",
+      tags: ["Python", "Pygame"],
+      imageSrc: "/projects/conway.png",
+      ghLink: "https://github.com/mounirLbath/Conway_game_of_life",
+      description: (
+        <>
+          <LinkButton
+            href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
+            target="blank"
+          >
+            Conway&apos;s game of life
+          </LinkButton>{" "}
+          simulation with a functional GUI.{" "}
+        </>
+      ),
+    },
+    {
+      title: "Gift Generator",
+      tags: ["NextJS", "Tailwind"],
+      link: "https://mounirlbath.github.io/gift-generator",
+      ghLink: "https://github.com/mounirLbath/gift-generator",
+      imageSrc: "/projects/gift_generator.png",
+      description: (
+        <>
+          A very cool website to make your friends smile. You can generate gifts
+          on{" "}
+          <LinkButton
+            href="https://mounirlbath.github.io/gift-generator/generate"
+            target="blank"
+          >
+            this page
+          </LinkButton>{" "}
+          or directly send the basic &quot;Happy Birthday&quot; gift on{" "}
+          <LinkButton
+            href="https://mounirlbath.github.io/gift-generator"
+            target="blank"
+          >
+            this page
+          </LinkButton>
+          .
+        </>
+      ),
+    },
+
     {
       title: "Fractals",
       tags: ["Python", "Blender"],
@@ -266,33 +289,7 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
         </>
       ),
     },
-    {
-      title: "Gift Generator",
-      tags: ["NextJS", "Tailwind"],
-      link: "https://mounirlbath.github.io/gift-generator",
-      ghLink: "https://github.com/mounirLbath/gift-generator",
-      imageSrc: "/projects/gift_generator.png",
-      description: (
-        <>
-          A very cool website to make your friends smile. You can generate gifts
-          on{" "}
-          <LinkButton
-            href="https://mounirlbath.github.io/gift-generator/generate"
-            target="blank"
-          >
-            this page
-          </LinkButton>{" "}
-          or directly send the basic &quot;Happy Birthday&quot; gift on{" "}
-          <LinkButton
-            href="https://mounirlbath.github.io/gift-generator"
-            target="blank"
-          >
-            this page
-          </LinkButton>
-          .
-        </>
-      ),
-    },
+
     {
       title: "This Website",
       tags: ["NextJS", "Tailwind"],

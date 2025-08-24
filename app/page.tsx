@@ -18,9 +18,9 @@ export default function Home() {
 
           <TypeText
             sequence={[
-              "I love math.",
-              1000,
               "I love coding.",
+              1000,
+              "I love math.",
               1000,
               "I love physics.",
               1000,
@@ -64,7 +64,14 @@ export default function Home() {
           >
             International Physics Olympiad
           </LinkButton>{" "}
-          in 2023 and a Gold Medal at the{" "}
+          in 2023, a First Prize at the{" "}
+          <LinkButton
+            target="blank"
+            href="https://www.imc-math.org.uk/?act=results&by=sum&year=2025"
+          >
+            International Mathematics Competition
+          </LinkButton>{" "}
+          in 2025 and a Gold Medal at the{" "}
           <LinkButton
             target="blank"
             href="https://www.animath.fr/resultats-des-olympiades-nationales-de-mathematiques-2021/"
@@ -130,9 +137,8 @@ export default function Home() {
           <ul className="list-disc list-inside pl-5">
             <li>Algorithms and Data Structures</li>
             <li>Object Oriented Programming</li>
-            <li>Functional Programming</li>
+            <li>Functional Programming (in OCaml)</li>
             <li>Machine Learning</li>
-            <li>Databases</li>
             <li>Introduction to Automata Theory</li>
           </ul>
           <li>Mathematics</li>
