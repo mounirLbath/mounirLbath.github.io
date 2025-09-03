@@ -12,7 +12,7 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
     {
       title: "Steady Box",
       tags: ["Unity", "C#"],
-      websiteLink: "http://steady-box-game.42web.io/",
+      websiteLink: "https://steady-box-game.netlify.app/",
       youtubeLink: "https://www.youtube.com/shorts/--9WWweBhEM",
       imageSrc: "/projects/steady_box.png",
       description: (
