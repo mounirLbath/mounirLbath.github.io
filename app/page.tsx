@@ -37,7 +37,7 @@ export default function Home() {
       <div id="aboutMe" className="pt-10">
         <Title>About me</Title>
         <p>
-          I am a first year student at{" "}
+          I am a second year student at{" "}
           <LinkButton href="https://www.polytechnique.edu/en" target="blank">
             Ecole Polytechnique
           </LinkButton>{" "}
