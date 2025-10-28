@@ -58,7 +58,7 @@ const ProjectTile = ({
               />
             </div>
           ) : null}
-          <p className="px-10">{description}</p>
+          <div className="px-10">{description}</div>
         </div>
         <div id="buttons" className="mt-5 flex space-x-5 align-bottom">
           {ghLink != "" ? <GithubLogo link={ghLink} /> : null}

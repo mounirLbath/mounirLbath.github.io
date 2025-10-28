@@ -63,6 +63,50 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
       ),
     },
     {
+      title: "GitBeat",
+      tags: ["NextJS", "Supabase", "OpenAI API", "Dust.tt","Suno","Tailwind"],
+      imageSrc: "/projects/Gitbeat.png",
+      link: "https://gitbeat.vercel.app/",
+      ghLink:"https://github.com/imbjdd/gitbeat",
+      description: <>GitBeat is a web application that transforms GitHub repositories into music based on their structure, contributors, and development patterns.
+      <br/>(Paris Tech:Europe Hackaton, September 2025, Team: <LinkButton
+            href="https://github.com/imbjdd"
+            target="blank"
+          >
+            Salim
+          </LinkButton> and <LinkButton
+            href="https://github.com/inin-zou"
+            target="blank"
+          >
+            Yongkang
+          </LinkButton>).</>,
+    },
+    {
+      title: "The Ultimate Viber",
+      tags: ["NextJS", "Mistral API", "Redis", "ElevenLabs"],
+      imageSrc: "/projects/UltimateViber.png",
+      link: "https://vibe.takara.ai/",
+      description: <>The Ultimate Viber is a vibe coding learning website (with games to learn prompt engineering and code verification)
+      <br/>(Paris Tech:Europe Hackaton <div className="font-bold inline">track winner</div>, May 2025, Team: <LinkButton
+            href="https://github.com/404missinglink"
+            target="blank"
+          >
+            Jordan
+          </LinkButton>, <LinkButton
+            href="https://github.com/Jacob-Kenney"
+            target="blank"
+          >
+            Jacob
+          </LinkButton>, and <LinkButton
+            href="https://huggingface.co/Tonic"
+            target="blank"
+          >
+            Joseph
+          </LinkButton>
+
+          ).</>,
+    },
+    {
       title: "Instant Listing",
       tags: ["Dart", "Flutter", "Gemini AI"],
       youtubeLink: "https://www.youtube.com/watch?v=HS4V52jAG9s",
@@ -83,6 +127,24 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
           >
             Gemini API competition.
           </LinkButton>
+        </>
+      ),
+    },
+    {
+      title: "Raytracer",
+      tags: ["Python", "OOP"],
+      imageSrc: "/projects/SpecularDemo.png",
+      ghLink: "https://github.com/mounirLbath/Raytracer",
+      description: (
+        <>
+          A{" "}
+          <LinkButton
+            target="blank"
+            href="https://en.wikipedia.org/wiki/Ray_tracing_(graphics)"
+          >
+            raytracer
+          </LinkButton>{" "}
+          built from scratch in Python
         </>
       ),
     },
@@ -142,30 +204,7 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
         </>
       ),
     },
-    {
-      title: "Raytracer",
-      tags: ["Python", "OOP"],
-      imageSrc: "/projects/BallAnimation.gif",
-      ghLink: "https://github.com/mounirLbath/Raytracer",
-      description: (
-        <>
-          A{" "}
-          <LinkButton
-            target="blank"
-            href="https://en.wikipedia.org/wiki/Ray_tracing_(graphics)"
-          >
-            raytracer
-          </LinkButton>{" "}
-          built from scratch with the help of{" "}
-          <LinkButton
-            target="blank"
-            href="https://perso.liris.cnrs.fr/nicolas.bonneel/ENS.html"
-          >
-            this course (number II).
-          </LinkButton>
-        </>
-      ),
-    },
+    
 
     {
       title: "Physics Engine",
