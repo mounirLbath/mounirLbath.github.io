@@ -10,30 +10,62 @@ interface Props {
 const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
   const projects = [
     {
-      title: "Steady Box",
-      tags: ["Unity", "C#"],
-      link: "https://play.google.com/store/apps/details?id=com.AandMstudios.SteadyBox",
-      websiteLink: "https://steady-box-game.netlify.app/",
-      youtubeLink: "https://www.youtube.com/shorts/--9WWweBhEM",
-      imageSrc: "/projects/steady_box.png",
-      description: (
-        <>
-          A mobile game published on the{" "}
-          <LinkButton
-            href="https://play.google.com/store/apps/details?id=com.AandMstudios.SteadyBox"
+      title: "MindStack",
+      tags: ["React", "Gemini Nano API", "Embedder"],
+      imageSrc: "/projects/MindStack2.png",
+      link: "https://devpost.com/software/mindstack-7txoal?ref_content=user-portfolio&ref_feature=in_progress",
+      ghLink:"https://github.com/mounirLbath/MindStack",
+      description: <>MindStack is a Chrome extension that turns your browser into your developer memory, automatically building cheat sheets and resurfacing your own fixes right inside Google Search. All local. (Chrome Built-In AI Challenge 2025, teamed up with <LinkButton
+            href="https://github.com/AmL-Dev"
             target="blank"
           >
-            Play Store
-          </LinkButton>{" "}
-          with 100+ downloads. I created this back in 10th grade alongside{" "}
-          <LinkButton
-            href="https://www.linkedin.com/in/amine-lbath"
+            Amine
+          </LinkButton>)</>,
+    },
+        {
+      title: "GitBeat",
+      tags: ["NextJS", "Supabase", "OpenAI API", "Dust.tt","Suno","Tailwind"],
+      imageSrc: "/projects/Gitbeat.png",
+      link: "https://gitbeat.vercel.app/",
+      ghLink:"https://github.com/imbjdd/gitbeat",
+      description: <>GitBeat is a web application that transforms GitHub repositories into music based on their structure, contributors, and development patterns.
+      <br/>(Paris Tech:Europe Hackaton <div className="font-bold inline">viral content winner</div>, September 2025, Team: <LinkButton
+            href="https://github.com/imbjdd"
             target="blank"
           >
-            my brother Amine.
+            Salim
+          </LinkButton> and <LinkButton
+            href="https://github.com/inin-zou"
+            target="blank"
+          >
+            Yongkang
+          </LinkButton>).</>,
+    },
+    
+    {
+      title: "The Ultimate Viber",
+      tags: ["NextJS", "Mistral API", "Redis", "ElevenLabs"],
+      imageSrc: "/projects/UltimateViber.png",
+      link: "https://vibe.takara.ai/",
+      description: <>The Ultimate Viber is a vibe coding learning website (with games to learn prompt engineering and code verification)
+      <br/>(Paris Tech:Europe Hackaton <div className="font-bold inline">track winner</div>, May 2025, Team: <LinkButton
+            href="https://github.com/404missinglink"
+            target="blank"
+          >
+            Jordan
+          </LinkButton>, <LinkButton
+            href="https://github.com/Jacob-Kenney"
+            target="blank"
+          >
+            Jacob
+          </LinkButton>, and <LinkButton
+            href="https://huggingface.co/Tonic"
+            target="blank"
+          >
+            Joseph
           </LinkButton>
-        </>
-      ),
+
+          ).</>,
     },
     {
       title: "Sky Delivery",
@@ -62,50 +94,36 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
         </>
       ),
     },
-    {
-      title: "GitBeat",
-      tags: ["NextJS", "Supabase", "OpenAI API", "Dust.tt","Suno","Tailwind"],
-      imageSrc: "/projects/Gitbeat.png",
-      link: "https://gitbeat.vercel.app/",
-      ghLink:"https://github.com/imbjdd/gitbeat",
-      description: <>GitBeat is a web application that transforms GitHub repositories into music based on their structure, contributors, and development patterns.
-      <br/>(Paris Tech:Europe Hackaton, September 2025, Team: <LinkButton
-            href="https://github.com/imbjdd"
-            target="blank"
-          >
-            Salim
-          </LinkButton> and <LinkButton
-            href="https://github.com/inin-zou"
-            target="blank"
-          >
-            Yongkang
-          </LinkButton>).</>,
-    },
-    {
-      title: "The Ultimate Viber",
-      tags: ["NextJS", "Mistral API", "Redis", "ElevenLabs"],
-      imageSrc: "/projects/UltimateViber.png",
-      link: "https://vibe.takara.ai/",
-      description: <>The Ultimate Viber is a vibe coding learning website (with games to learn prompt engineering and code verification)
-      <br/>(Paris Tech:Europe Hackaton <div className="font-bold inline">track winner</div>, May 2025, Team: <LinkButton
-            href="https://github.com/404missinglink"
-            target="blank"
-          >
-            Jordan
-          </LinkButton>, <LinkButton
-            href="https://github.com/Jacob-Kenney"
-            target="blank"
-          >
-            Jacob
-          </LinkButton>, and <LinkButton
-            href="https://huggingface.co/Tonic"
-            target="blank"
-          >
-            Joseph
-          </LinkButton>
 
-          ).</>,
+    
+    {
+      title: "Steady Box",
+      tags: ["Unity", "C#"],
+      link: "https://play.google.com/store/apps/details?id=com.AandMstudios.SteadyBox",
+      websiteLink: "https://steady-box-game.netlify.app/",
+      youtubeLink: "https://www.youtube.com/shorts/--9WWweBhEM",
+      imageSrc: "/projects/steady_box.png",
+      description: (
+        <>
+          A mobile game published on the{" "}
+          <LinkButton
+            href="https://play.google.com/store/apps/details?id=com.AandMstudios.SteadyBox"
+            target="blank"
+          >
+            Play Store
+          </LinkButton>{" "}
+          with 100+ downloads. I created this back in 10th grade alongside{" "}
+          <LinkButton
+            href="https://www.linkedin.com/in/amine-lbath"
+            target="blank"
+          >
+            my brother Amine.
+          </LinkButton>
+        </>
+      ),
     },
+    
+
     {
       title: "Instant Listing",
       tags: ["Dart", "Flutter", "Gemini AI"],
