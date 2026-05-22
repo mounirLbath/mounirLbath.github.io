@@ -250,7 +250,7 @@ A character is any function in $\mathbb{C}^G$ that is the character of some repr
   $$
 - Using the notations of Example 4, one has
   $$
-\chi_{\widetilde{\rho,\rho'}}=\overline{\chi_{\rho}},\chi_{\rho'},
+  \chi_{(\widetilde{\rho,\rho'})}=\overline{\chi_{\rho}},\chi_{\rho'},
   $$
   which is a consequence (via the previous point and the definition of $(\widetilde{\rho,\rho'})$) of the fact that for $A,B\in M_n(\mathbb{C})$, the linear map $M\in M_n(\mathbb{C})\mapsto AMB\in M_n(\mathbb{C})$ has trace $\operatorname{Tr}(A)\operatorname{Tr}(B)$.
 
@@ -324,7 +324,7 @@ $$
 (since for a projector its trace equals its rank). On the other hand, by linearity and Example 5,
 
 $$
-\operatorname{Tr}\Bigl(\frac{1}{|G|}\sum_{g\in G}(\widetilde{\rho,\rho'})(g)\Bigr)=\frac{1}{|G|}\sum_{g\in G}\chi_{\widetilde{\rho,\rho'}}(g)
+\operatorname{Tr}\Bigl(\frac{1}{|G|}\sum_{g\in G}(\widetilde{\rho,\rho'})(g)\Bigr)=\frac{1}{|G|}\sum_{g\in G}\chi_{(\widetilde{\rho,\rho'})}(g)
 =\frac{1}{|G|}\sum_{g\in G} \overline{\chi_\rho(g)}\chi_{\rho'}(g)=\langle\chi_\rho,\chi_{\rho'}\rangle.
 $$
 
