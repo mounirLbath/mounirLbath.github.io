@@ -250,7 +250,7 @@ A character is any function in $\mathbb{C}^G$ that is the character of some repr
   $$
 - Using the notations of Example 4, one has
   $$
-\chi_{\widetilde{(\rho,\rho')}}=\overline{\chi_{\rho}}\chi_{\rho'}
+\chi_{\widetilde{\rho,\rho'}}=\overline{\chi_{\rho}},\chi_{\rho'},
   $$
   which is a consequence (via the previous point and the definition of $(\widetilde{\rho,\rho'})$) of the fact that for $A,B\in M_n(\mathbb{C})$, the linear map $M\in M_n(\mathbb{C})\mapsto AMB\in M_n(\mathbb{C})$ has trace $\operatorname{Tr}(A)\operatorname{Tr}(B)$.
 
