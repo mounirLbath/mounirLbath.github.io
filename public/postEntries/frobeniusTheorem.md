@@ -748,7 +748,7 @@ which is linear in the second variable (i.e. for all $x,y,z\in V$ and $\lambda\i
 
 ---
 
-## 📚 Bibliography
+## Bibliography
 
 1. **Gaëtan Chenevier**  
    _Algebra I Course (Chapter 7, Linear Representations of Finite Groups)_
