@@ -325,7 +325,7 @@ $$
 
 $$
 \operatorname{Tr}\Bigl(\frac{1}{|G|}\sum_{g\in G}(\widetilde{\rho,\rho'})(g)\Bigr)=\frac{1}{|G|}\sum_{g\in G}\chi_{\widetilde{\rho,\rho'}}(g)
-=\frac{1}{|G|}\sum \overline{\chi_\rho(g)}\chi_{\rho'}(g)=\langle\chi_\rho,\chi_{\rho'}\rangle.
+=\frac{1}{|G|}\sum_{g\in G} \overline{\chi_\rho(g)}\chi_{\rho'}(g)=\langle\chi_\rho,\chi_{\rho'}\rangle.
 $$
 
 Combining with Schur’s lemma (Proposition 4) completes the proof. $\square$
