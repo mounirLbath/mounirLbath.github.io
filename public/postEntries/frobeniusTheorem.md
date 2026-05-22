@@ -746,8 +746,6 @@ $$
 
 which is linear in the second variable (i.e. for all $x,y,z\in V$ and $\lambda\in\mathbb{C}$, $\langle x,y+\lambda z\rangle=\langle x,y\rangle+\lambda\langle x,z\rangle$), Hermitian symmetric (i.e. $\langle x,y\rangle=\overline{\langle y,x\rangle}$), positive (i.e. $\langle x,x\rangle\in\mathbb{R}_+$ for all $x\in V$), and definite (i.e. $\langle x,x\rangle=0$ if and only if $x=0$). As in the Euclidean case, one defines the notion of orthogonality and orthonormal families.
 
-Here is the **translated bibliography** from the French PDF document, formatted in clean **Markdown**:
-
 ---
 
 ## 📚 Bibliography
