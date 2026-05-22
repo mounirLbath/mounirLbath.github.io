@@ -250,7 +250,7 @@ A character is any function in $\mathbb{C}^G$ that is the character of some repr
   $$
 - Using the notations of Example 4, one has
   $$
-  \chi_{\widetilde{\rho,\rho'}}=\chi_\rho\,\chi_{\rho'},
+\chi_{\widetilde{(\rho,\rho')}}=\overline{\chi_{\rho}}\chi_{\rho'}
   $$
   which is a consequence (via the previous point and the definition of $(\widetilde{\rho,\rho'})$) of the fact that for $A,B\in M_n(\mathbb{C})$, the linear map $M\in M_n(\mathbb{C})\mapsto AMB\in M_n(\mathbb{C})$ has trace $\operatorname{Tr}(A)\operatorname{Tr}(B)$.
 
@@ -258,7 +258,7 @@ A character is any function in $\mathbb{C}^G$ that is the character of some repr
 We endow $\mathbb{C}^G$ with the Hermitian inner product (see Appendix) defined by
 
 $$
-\forall\,(u,v)\in\mathbb{C}^G\times\mathbb{C}^G,\quad \langle u,v\rangle=\frac{1}{|G|}\sum_{g\in G} u(g)v(g).
+\forall\,(u,v)\in\mathbb{C}^G\times\mathbb{C}^G,\quad \langle u,v\rangle=\frac{1}{|G|}\sum_{g\in G} \overline{u(g)}v(g).
 $$
 
 To compute the Hermitian inner product of two characters, we again use the “averaging technique”:
@@ -325,7 +325,7 @@ $$
 
 $$
 \operatorname{Tr}\Bigl(\frac{1}{|G|}\sum_{g\in G}(\widetilde{\rho,\rho'})(g)\Bigr)=\frac{1}{|G|}\sum_{g\in G}\chi_{\widetilde{\rho,\rho'}}(g)
-=\frac{1}{|G|}\sum_{g\in G}\chi_\rho(g)\chi_{\rho'}(g)=\langle\chi_\rho,\chi_{\rho'}\rangle.
+=\frac{1}{|G|}\sum \overline{\chi_\rho(g)}\chi_{\rho'}(g)=\langle\chi_\rho,\chi_{\rho'}\rangle.
 $$
 
 Combining with Schur’s lemma (Proposition 4) completes the proof. $\square$
@@ -372,7 +372,7 @@ $$
 \rho\sim n_1\rho_1\oplus\cdots\oplus n_r\rho_r\quad \text{and}\quad \rho'\sim n'_1\rho_1\oplus\cdots\oplus n'_r\rho_r.
 $$
 
-By orthonormality, $\langle\chi_i,\chi_\rho\rangle=n_i$ and similarly $\langle\chi_i,\chi_{\rho'}\rangle=n'_i$. Thus, $n_i=n'_i$ for each $i$, and so $\rho\sim\rho'$. $\square$
+By orthonormality, $\sum_{j=1}^r n_j\langle\chi_i,\chi_j\rangle=n_i$ and similarly $\langle\chi_i,\chi_{\rho'}\rangle=n'_i$. Thus, $n_i=n'_i$ for each $i$, and so $\rho\sim\rho'$. $\square$
 
 One can in fact show a stronger result than the orthonormality of characters (we will not prove it here):
 
@@ -453,7 +453,7 @@ Translating Proposition 9 into an equality of dimensions (using Proposition 5), 
 Using the notations of Proposition 9 and denoting $\operatorname{Ind}^G_H(\chi_{\rho_0})=\chi_\rho$, and letting $\langle\,\cdot\,,\cdot\,\rangle_G$ (resp. $\langle\,\cdot\,,\cdot\,\rangle_H$) be the canonical inner product on $\operatorname{Cent}(G)$ (resp. $\operatorname{Cent}(H)$), we have
 
 $$
-\langle\operatorname{Ind}^G_H(\chi_{\rho_0}),\chi_{\rho'}\rangle_G=\langle\chi_{\rho_0},\chi'_{\rho}|_H\rangle_H.
+\langle\operatorname{Ind}^G_H(\chi_{\rho_0}),\chi_{\rho'}\rangle_G=\langle\chi_{\rho_0},\chi_{\rho'}|_H\rangle_H.
 $$
 
 Thus, by Proposition 6, one may speak of the "induced character" of $\chi_{\rho_0}$ for $\operatorname{Ind}^G_H(\chi_{\rho_0})$.
@@ -482,7 +482,7 @@ i.e. such that $g_i^{-1}gg_i\in H$. Thus, by the invariance of trace under chang
 
 $$
 \chi(g)=\sum_{\substack{1\le i\le l\\ g_i^{-1}gg_i\in H}} \operatorname{Tr}(\rho(g)|_{\rho(g_i)(W)})
-=\sum_{\substack{1\le i\le l\\ g_i^{-1}gg_i\in H}} \operatorname{Tr}(\rho(g_i)^{-1}gg_i|_W)
+=\sum_{\substack{1\le i\le l\\ g_i^{-1}gg_i\in H}} \operatorname{Tr}(\rho(g_i^{-1}gg_i)|_W)
 =\sum_{\substack{1\le i\le l\\ g_i^{-1}gg_i\in H}} \chi(g_i^{-1}gg_i).
 $$
 
@@ -524,7 +524,7 @@ $$
 =\frac{1}{|H|}\cdot|H|\cdot f(g)=f(g).
 $$
 
-Now, let $g\in N\setminus\{e\}$. For any $k\in G$, $kgk^{-1}\notin H$ (otherwise $g\in k^{-1}Hk$, contradicting the definition of $N$). Thus, $f(kgk^{-1})=0$ and so $\widetilde{f}(g)=0$. $\square$
+Now, let $g\in N\setminus\{e\}$. For any $k\in G$, $kgk^{-1}\notin H$ (otherwise $g\in k^{-1}Hk$, contradicting the definition of $N$), thus $\widetilde{f}(g)=0$. $\square$
 
 **Proof of Proposition 12.**  
 Let $d=\chi(e)$ be the degree of $\chi$, $l=|G|/|H|\in\mathbb{N}$, $\theta_H$ the trivial character of $H$ and $\theta_G$ the trivial character of $G$. If $\chi$ is the trivial character, simply take $\widetilde{\chi}$ as the trivial character of $G$, which is irreducible.
