@@ -1,7 +1,6 @@
 import React from "react";
 import GithubLogo from "./Logos/GithubLogo";
 import LinkedinLogo from "./Logos/LinkedinLogo";
-import EmailLogo from "./Logos/EmailLogo";
 
 const Footer = () => {
   return (
