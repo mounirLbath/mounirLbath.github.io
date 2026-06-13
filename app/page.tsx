@@ -50,11 +50,11 @@ export default function Home() {
             Louis-Le-Grand
           </LinkButton>
           {", "}
-          an intensive science undergraduate program. I have a deep passion for
+          an intensive science undergraduate program. I'm currently a Software Engineering Intern at Databricks in Berlin. I have a deep passion for
           computer science, mathematics and physics. I love to solve problems
           and to learn new things. I&apos;ve always been fascinated by how
           science and technology can improve lives, and I&apos;m eager to
-          contribute to that progress. You can check some of my coolest projects{" "}
+          contribute to that progress. You can check some of my projects{" "}
           <LinkButton href="/projects">here</LinkButton>.
           <br /> <br />
           My notable achievements include a silver medal at the{" "}
@@ -90,7 +90,7 @@ export default function Home() {
           >
             Lyon Math Circle
           </LinkButton>
-          .
+          . I'm also the president of Polytechnique's AI Student Association (Binet IA) and am getting involved in <LinkButton href="https://www.unaite.fr/" target="blank">Unaite</LinkButton> (student federation uniting France's leading AI institutions).
         </p>
       </div>
 
@@ -124,50 +124,6 @@ export default function Home() {
         <p>And here are the softwares I use:</p>
 
         <SoftwareTools />
-      </div>
-
-      <div id="school">
-        <Title>School</Title>
-        <p>
-          Here is a list of the courses I have taken or subjects I have studied
-          so far:
-        </p>
-        <ul className="list-disc list-inside pl-5">
-          <li>Computer Science</li>
-          <ul className="list-disc list-inside pl-5">
-            <li>Algorithms and Data Structures</li>
-            <li>Object Oriented Programming</li>
-            <li>Functional Programming (in OCaml)</li>
-            <li>Machine Learning</li>
-            <li>Introduction to Automata Theory</li>
-          </ul>
-          <li>Mathematics</li>
-          <ul className="list-disc list-inside pl-5">
-            <li>Linear Algebra</li>
-            <li>Probability and Statistics</li>
-            <li>Real Analysis</li>
-            <li>Number Theory</li>
-
-            <li>Galois Theory</li>
-            <li>Complex Analysis</li>
-            <li>Topology</li>
-            <li>Olympic Math (Geometry, Combinatorics, ...)</li>
-          </ul>
-
-          <li>Physics</li>
-          <ul className="list-disc list-inside pl-5">
-            <li>Mechanics</li>
-            <li>Quantum Mechanics</li>
-            <li>Electromagnetism</li>
-            <li>Thermodynamics</li>
-            <li>Optics</li>
-            <li>Special Relativity (IPhO level)</li>
-          </ul>
-          <li>Economics</li>
-          <ul className="list-disc list-inside pl-5">
-            <li>Introduction to microeconomics and macroeconomics</li>
-          </ul>
-        </ul>
       </div>
     </>
   );
