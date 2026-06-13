@@ -50,7 +50,7 @@ export default function Home() {
             Louis-Le-Grand
           </LinkButton>
           {", "}
-          an intensive science undergraduate program. I'm currently a Software Engineering Intern at Databricks in Berlin. I have a deep passion for
+          an intensive science undergraduate program. I&apos;m currently a Software Engineering Intern at Databricks in Berlin. I have a deep passion for
           computer science, mathematics and physics. I love to solve problems
           and to learn new things. I&apos;ve always been fascinated by how
           science and technology can improve lives, and I&apos;m eager to
@@ -90,7 +90,7 @@ export default function Home() {
           >
             Lyon Math Circle
           </LinkButton>
-          . I'm also the president of Polytechnique's AI Student Association (Binet IA) and am getting involved in <LinkButton href="https://www.unaite.fr/" target="blank">Unaite</LinkButton> (student federation uniting France's leading AI institutions).
+          . I&apos;m also the president of Polytechnique&apos;s AI Student Association (Binet IA) and am getting involved in <LinkButton href="https://www.unaite.fr/" target="blank">Unaite</LinkButton> (student federation uniting France&apos;s leading AI institutions).
         </p>
       </div>
 
