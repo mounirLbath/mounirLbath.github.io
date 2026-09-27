@@ -292,37 +292,6 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
       ),
     },
     {
-      title: "ML experiments",
-      tags: ["Python", "Jupyter"],
-      ghLink: "https://github.com/mounirLbath/ML_experiments",
-      description: (
-        <>
-          Various machine learning experiments after reading Standford CS229
-          course. Includes a neural network for digit recognition (with a Pygame
-          GUI to draw digits on the screen) built from scratch following{" "}
-          <LinkButton
-            href="http://neuralnetworksanddeeplearning.com/"
-            target="blank"
-          >
-            this book.
-          </LinkButton>
-        </>
-      ),
-    },
-
-    {
-      title: "This Website",
-      tags: ["NextJS", "Tailwind"],
-      link: "https://mounirlbath.github.io/",
-      ghLink: "https://github.com/mounirLbath/mounirLbath.github.io",
-      description: (
-        <>
-          This website was built with NextJS and Tailwind CSS. I had fun
-          thinking at the designs from scratch.
-        </>
-      ),
-    },
-    {
       title: "Sports Game",
       tags: ["JS", "p5.js"],
       link: "https://www.khanacademy.org/computer-programming/sports/6347487175573504",
