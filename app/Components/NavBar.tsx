@@ -8,7 +8,7 @@ const navLinks = [
   { display: "Home", path: "" },
   { display: "Posts", path: "posts" },
   { display: "Projects", path: "projects" },
-  { display: "Photos", path: "photos" },
+  { display: "Other", path: "other" },
 ];
 
 const NavBar = () => {
