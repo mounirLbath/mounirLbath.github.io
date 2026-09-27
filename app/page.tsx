@@ -35,7 +35,7 @@ export default function Home() {
             >
               Louis-Le-Grand
             </LinkButton>
-            . I currently work with Maks Ovsjanikov at LIX on functional maps and the spectral geometry of attention.
+            . I currently work with Prof Maks Ovsjanikov at LIX on functional maps and the spectral geometry of attention.
           </p>
           <p className="mb-5">
             I am interested in geometry and machine learning: shape
