@@ -1,15 +1,10 @@
 import React from "react";
-import GithubLogo from "./Logos/GithubLogo";
-import LinkedinLogo from "./Logos/LinkedinLogo";
 
 const Footer = () => {
   return (
-    <div className="flex justify-center mt-5 p-10 space-x-5 ">
-      <p>Mounir Lbath © 2026</p>
-      <GithubLogo link="https://github.com/mounirLbath" />
-      <LinkedinLogo link="https://linkedin.com/in/mounir-lbath" />
-      {/* Removed email to avoid spams */}
-    </div>
+    <footer className="mx-auto max-w-3xl px-5 py-10 text-sm text-gray-500 dark:text-gray-500">
+      © 2026 Mounir Lbath
+    </footer>
   );
 };
 

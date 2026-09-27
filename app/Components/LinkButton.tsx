@@ -15,7 +15,7 @@ const LinkButton = ({
 }: Props) => {
   return (
     <Link
-      className={"text-blue-500 hover:text-blue-900 " + className}
+      className={"text-link hover:text-link-hover " + className}
       href={href}
       target={target}
     >

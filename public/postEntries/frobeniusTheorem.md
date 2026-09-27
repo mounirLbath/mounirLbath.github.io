@@ -3,6 +3,7 @@ author: Mounir Lbath
 title: Frobenius Theorem
 date: March 2024
 numericalDate: 2024-03-01
+description: A proof of Frobenius' theorem on Frobenius groups using the character theory of finite groups.
 ---
 
 ## Table of Contents

@@ -1,10 +1,12 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import { MarkdownAsync } from "react-markdown";
+import type { PluggableList } from "unified";
 import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
 import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeCitation from "rehype-citation";
 import "katex/dist/katex.min.css"; // Import KaTeX styles
 import ReadMdPost from "./ReadMdPost";
 
@@ -15,18 +17,40 @@ interface Props {
 const Page = async ({ postName }: Props) => {
   try {
     const { data, content } = await ReadMdPost(postName);
+
+    // Posts cite with [@key]; `bibliography: name.bib` in the frontmatter
+    // points to public/postEntries/bib/. References go where `[^ref]` is.
+    const citationPlugin: PluggableList = data.bibliography
+      ? [
+          [
+            rehypeCitation,
+            {
+              bibliography: data.bibliography,
+              path: process.cwd() + "/public/postEntries/bib",
+              csl: data.csl ?? "apa",
+              linkCitations: true,
+            },
+          ],
+        ]
+      : [];
+
     return (
       <div className="markdown">
-        <ReactMarkdown
+        <MarkdownAsync
           remarkPlugins={[[remarkMath], remarkGfm]}
-          rehypePlugins={[rehypeKatex, rehypeSlug, rehypeAutolinkHeadings]}
+          rehypePlugins={[
+            rehypeKatex,
+            ...citationPlugin,
+            rehypeSlug,
+            rehypeAutolinkHeadings,
+          ]}
         >
           {`# ${data.title != undefined ? data.title : ""} \n ${
             data.author != undefined ? "*" + data.author + "*, " : ""
           } ${
             data.date != undefined ? "*" + data.date + "*" : ""
           } \n ${content}`}
-        </ReactMarkdown>
+        </MarkdownAsync>
       </div>
     );
   } catch {
@@ -35,58 +59,3 @@ const Page = async ({ postName }: Props) => {
 };
 
 export default Page;
-
-// import React from "react";
-
-// import { promises as fs } from "fs";
-// import ReactMarkdown from "react-markdown";
-// import remarkMath from "remark-math";
-// import remarkGfm from "remark-gfm";
-// import rehypeKatex from "rehype-katex";
-// import rehypeSlug from "rehype-slug";
-// import rehypeAutolinkHeadings from "rehype-autolink-headings";
-// import "katex/dist/katex.min.css"; // Import KaTeX styles
-// import { InferGetStaticPropsType } from "next";
-
-// interface Props {
-//   postName: string;
-// }
-
-// export const getStaticProps = async ({ postName }: Props) => {
-//   try {
-//     const file = await fs.readFile(
-//       process.cwd() + "/public/posts/" + postName,
-//       "utf8"
-//     );
-
-//     return {
-//       props: {
-//         post: file,
-//       },
-//     };
-//   } catch (err) {
-//     console.error(err);
-//     return {
-//       props: {
-//         post: "Couldn&apos;t load file.",
-//       },
-//     };
-//   }
-// };
-
-// const Page = async ({
-//   post,
-// }: InferGetStaticPropsType<typeof getStaticProps>) => {
-//   return (
-//     <div className="markdown">
-//       <ReactMarkdown
-//         remarkPlugins={[[remarkMath], remarkGfm]}
-//         rehypePlugins={[rehypeKatex, rehypeSlug, rehypeAutolinkHeadings]}
-//       >
-//         {post}
-//       </ReactMarkdown>
-//     </div>
-//   );
-// };
-
-// export default Page;

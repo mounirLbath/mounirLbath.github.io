@@ -1,0 +1,1636 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Functional Map Bench</title>
+<meta name="description" content="Interactive functional maps between two deformable meshes (Ovsjanikov et al. 2012)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:ital,wght@0,500;1,400&display=swap">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f5f2;          /* cool-green biased paper */
+  --panel: #ffffff;
+  --panel-2: #eceeea;
+  --ink: #1b2026;
+  --muted: #5b6570;
+  --line: #d6dad4;
+  --grid: rgba(27, 32, 38, 0.10);
+  --accent: #1f5fb8;
+  --accent-ink: #ffffff;
+  --series-a: #2a78d6;
+  --series-b: #eb6834;
+  --viewport-bg: #e6e8e3;
+  --focus: #1f5fb8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15181c; --panel: #1d2126; --panel-2: #262b31; --ink: #eceef0; --muted: #a2abb5;
+    --line: #333a42; --grid: rgba(236, 238, 240, 0.12); --accent: #5b9cf0; --accent-ink: #0b1018;
+    --series-a: #3987e5; --series-b: #d95926; --viewport-bg: #23272d; --focus: #8bbcff;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15181c; --panel: #1d2126; --panel-2: #262b31; --ink: #eceef0; --muted: #a2abb5;
+  --line: #333a42; --grid: rgba(236, 238, 240, 0.12); --accent: #5b9cf0; --accent-ink: #0b1018;
+  --series-a: #3987e5; --series-b: #d95926; --viewport-bg: #23272d; --focus: #8bbcff;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); }
+body { font: 14px/1.45 "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif; padding-inline: 16px; padding-block: 12px 32px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+h1 { font-family: "Newsreader", Georgia, "Times New Roman", serif; font-weight: 500; font-size: 26px; letter-spacing: -0.01em; }
+h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+.mono, output, td, .vlabel, #status, #cinfo { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace; font-variant-numeric: tabular-nums; }
+a { color: var(--accent); }
+button, select, input { font: inherit; color: inherit; }
+button { background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
+button:hover { border-color: var(--muted); }
+button.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button:focus-visible, select:focus-visible, input:focus-visible, canvas:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+select { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 4px 6px; }
+input[type=range] { accent-color: var(--accent); width: 100%; margin: 0; }
+input[type=checkbox], input[type=radio] { accent-color: var(--accent); }
+
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; padding-bottom: 10px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+header .sub { color: var(--muted); }
+header .sub .formula { font-family: "Newsreader", Georgia, serif; font-style: italic; font-size: 16px; color: var(--ink); }
+header button { margin-left: auto; }
+
+#about { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 18px; margin-bottom: 14px; max-width: 78ch; }
+#about p { margin: 0 0 8px; }
+#about p:last-child { margin: 0; }
+
+#main { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 16px; align-items: start; }
+#left { display: grid; gap: 12px; min-width: 0; }
+#views { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.view { position: relative; background: var(--viewport-bg); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; aspect-ratio: 1 / 1; max-width: 100%; }
+.view canvas { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+.view canvas:active { cursor: grabbing; }
+.view canvas[data-tool="sculpt"] { cursor: crosshair; }
+.view canvas[data-tool="move"] { cursor: move; }
+.vlabel { position: absolute; top: 8px; left: 10px; font-size: 12px; padding: 2px 8px; border-radius: 3px; background: var(--panel); border: 1px solid var(--line); }
+.vlabel::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background: var(--series-a); vertical-align: 0; }
+.view.b .vlabel::before { background: var(--series-b); }
+.busy { position: absolute; right: 10px; top: 8px; font-size: 12px; padding: 2px 8px; border-radius: 3px; background: var(--accent); color: var(--accent-ink); }
+.busy::after { content: "…"; }
+#vizbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; color: var(--muted); font-size: 13px; }
+#vizCaption { flex: 1 1 320px; min-width: 0; }
+#vizCaption b { color: var(--ink); font-weight: 600; }
+#colorLegend { display: inline-flex; align-items: center; gap: 6px; }
+#colorLegend .bar { width: 120px; height: 10px; border-radius: 2px; border: 1px solid var(--line); background: linear-gradient(90deg, #1f5fb8, #6fa3e8, #d9d9d3, #ef8f6a, #b8261f); }
+#colorLegend[data-kind="seq"] .bar { background: linear-gradient(90deg, #f2f2ee, #f6c7a1, #ea7d4a, #b8261f, #5a0d0a); }
+#colorLegend[data-kind="none"] { visibility: hidden; }
+#colorLegend .lab { font-size: 11px; }
+#colorLegend[data-kind="seq"] .lab.lo::after { content: "0"; } #colorLegend[data-kind="seq"] .lab.hi::after { content: "25 %"; }
+#colorLegend[data-kind="div"] .lab.lo::after { content: "−max"; } #colorLegend[data-kind="div"] .lab.hi::after { content: "+max"; }
+
+#toolbar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 13px; }
+#toolbar .group { display: inline-flex; gap: 4px; }
+#toolbar label { display: inline-flex; align-items: center; gap: 5px; }
+#brushRow { display: inline-flex; align-items: center; gap: 6px; }
+#brushRow input { width: 90px; }
+#toolbar .hint { color: var(--muted); }
+
+#analysis { display: grid; grid-template-columns: minmax(260px, 380px) minmax(0, 1fr); gap: 16px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+#cmapWrap { position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 100%; }
+#cmap { width: 100%; height: 100%; display: block; cursor: crosshair; }
+#cmapAxes { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+#cinfo { font-size: 12px; color: var(--muted); min-height: 1.4em; }
+#eigchart { width: 100%; height: 150px; display: block; }
+.legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 14px; height: 3px; margin-right: 6px; vertical-align: middle; border-radius: 2px; background: var(--series-a); }
+.legend span.b::before { background: var(--series-b); }
+#stats { border-collapse: collapse; width: 100%; font-size: 13px; }
+#stats th { text-align: left; font-weight: 400; color: var(--muted); padding: 4px 8px 4px 0; border-bottom: 1px solid var(--line); }
+#stats td { padding: 4px 8px 4px 0; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+#stats td.hint { text-align: left; color: var(--muted); font-family: inherit; font-size: 12px; }
+
+#side { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; display: grid; gap: 14px; align-content: start; position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; }
+#side section { display: grid; gap: 6px; }
+#side section + section { border-top: 1px solid var(--line); padding-top: 12px; }
+.row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
+.row label { display: inline-flex; align-items: center; gap: 5px; }
+.slider { display: grid; grid-template-columns: 82px 1fr 46px; align-items: center; gap: 8px; font-size: 13px; }
+.slider span { color: var(--muted); }
+.slider output { text-align: right; font-size: 12px; }
+.shapehead { display: flex; align-items: center; gap: 6px; }
+.shapehead h3 { flex: 1; }
+.shapehead h3::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background: var(--series-a); }
+.shapehead.b h3::before { background: var(--series-b); }
+.shapehead button { font-size: 12px; padding: 2px 8px; }
+.radio { display: grid; gap: 4px; }
+#status { font-size: 11px; color: var(--muted); }
+@media (max-width: 980px) {
+  #main { grid-template-columns: 1fr; }
+  #side { position: static; max-height: none; }
+  #analysis { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) { #views { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+details.pose { display: grid; gap: 6px; }
+details.pose summary { cursor: pointer; font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; list-style: none; }
+details.pose summary::before { content: "▸"; }
+details.pose[open] summary::before { content: "▾"; }
+details.pose summary button { font-size: 11px; padding: 1px 7px; margin-left: auto; }
+
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Functional Map Bench</h1>
+  <span class="sub">Ovsjanikov, Ben-Chen, Solomon, Butscher &amp; Guibas, SIGGRAPH 2012 &nbsp;·&nbsp; <span class="formula">C = Φ<sub>B</sub><sup>T</sup> M<sub>B</sub> Π Φ<sub>A</sub></span></span>
+  <button id="aboutBtn" aria-expanded="false" aria-controls="about">About this page</button>
+</header>
+<div id="about" hidden>
+  <p><b>What you are looking at.</b> Shape B is a deformation of shape A with the same mesh connectivity, so the correspondence T: A → B is known (vertex i ↔ vertex i). A functional map represents T by how it carries functions: f on A becomes f ∘ T<sup>−1</sup> on B. Written in the first k Laplace–Beltrami eigenfunctions of each shape, this is a k × k matrix C. Rows index the basis of B, columns the basis of A. Near-isometric deformations (bending, twisting) give a nearly diagonal C; stretching, bumps and sculpting spread energy off the diagonal and grow with k.</p>
+  <p><b>Ground truth</b> uses the known correspondence directly. <b>Estimated</b> follows the 2012 paper: it never sees the correspondence, only descriptor functions (Wave Kernel Signatures, plus a few heat-kernel landmark functions at the yellow points) that should be preserved, C A ≈ B, together with commutativity with the Laplacians, ‖C Λ<sub>A</sub> − Λ<sub>B</sub> C‖, solved in least squares row by row. Optional ICP refinement alternates nearest neighbours in the spectral domain with projection onto orthogonal matrices. With no landmarks the near-symmetries of these shapes make the problem ambiguous, which the statistics make visible.</p>
+  <p><b>Interacting.</b> Drag to orbit, scroll to zoom. The Move tool translates a shape (drag) or rotates it (Alt + drag); the same rigid motion is available as Pose sliders. Because the Laplace–Beltrami operator is intrinsic, a rigid motion changes neither the eigenbasis nor C, only the coordinate functions you might transfer. The Cat base is a procedural implicit surface extracted with surface nets, so it can be regenerated at any resolution. Move the sliders, or pick the Sculpt tool (or hold Shift) and drag on either surface to pull it; the eigenbases and the map recompute automatically. Hover over a cell C[i, j] of the heatmap to see the two eigenfunctions it relates; click to keep it. In Function transfer mode, click on A to move the bump. Eigenvector signs of B are flipped to match A so that a clean map reads as +1 on the diagonal.</p>
+</div>
+<div id="main">
+  <div id="left">
+    <div id="views">
+      <div class="view a"><canvas id="canvasA" tabindex="0" aria-label="Shape A viewport"></canvas><div class="vlabel">Shape A (source)</div><div class="busy" id="busyA" hidden>computing</div></div>
+      <div class="view b"><canvas id="canvasB" tabindex="0" aria-label="Shape B viewport"></canvas><div class="vlabel">Shape B (target)</div><div class="busy" id="busyB" hidden>computing</div></div>
+    </div>
+    <div id="vizbar">
+      <div id="vizCaption">Computing the Laplace–Beltrami eigenbases…</div>
+      <div id="colorLegend" data-kind="div"><span class="lab lo"></span><span class="bar"></span><span class="lab hi"></span></div>
+    </div>
+    <div id="toolbar">
+      <span class="group" role="group" aria-label="Pointer tool"><button data-tool="orbit" class="active">Orbit</button><button data-tool="sculpt">Sculpt</button><button data-tool="move">Move</button></span>
+      <span id="brushRow" hidden><span>Brush</span><input type="range" id="brush" min="0.1" max="0.9" step="0.01" value="0.35"><output>0.35</output></span>
+      <label><input type="checkbox" id="linkViews" checked> Link views</label>
+      <label><input type="checkbox" id="wireframe"> Wireframe</label>
+      <span class="hint" id="toolHint">Shift + drag sculpts in any tool.</span>
+    </div>
+    <div id="analysis">
+      <div class="panel">
+        <h3>Functional map C (k × k)</h3>
+        <div id="cmapWrap"><canvas id="cmap" aria-label="Functional map heatmap"></canvas></div>
+        <div id="cmapAxes"><span>columns: basis of A →</span><span>rows: basis of B ↓</span></div>
+        <div id="cinfo">Hover a cell to see the pair of eigenfunctions it relates.</div>
+      </div>
+      <div class="panel">
+        <h3>Eigenvalues of the two Laplacians</h3>
+        <canvas id="eigchart" aria-label="Eigenvalue chart"></canvas>
+        <div class="legend"><span>λ of shape A</span><span class="b">λ of shape B</span></div>
+        <h3>Map statistics</h3>
+        <table id="stats"></table>
+        <div id="status">Starting…</div>
+      </div>
+    </div>
+  </div>
+  <aside id="side">
+    <section>
+      <h3>Mesh</h3>
+      <div class="row">
+        <label>Base <select id="baseKind"><option value="blob">Blob (no symmetries)</option><option value="cat">Cat</option><option value="sphere">Sphere</option><option value="torus">Torus</option></select></label>
+        <label>Resolution <select id="resolution"><option value="low">Low (~650 vertices)</option><option value="med">Medium (~1 000 vertices)</option><option value="high">High (~1 450 vertices, slow)</option></select></label>
+      </div>
+      <div class="row"><button id="swapAB">Swap A and B</button></div>
+    </section>
+    <section>
+      <div class="shapehead a"><h3>Shape A</h3><button id="randomA">Random</button><button id="clearSculptA">Undo sculpt</button><button id="resetA">Reset</button></div>
+      <div id="paramsA"></div>
+      <details class="pose"><summary>Pose (rotate / translate) <button id="resetPoseA">Reset pose</button></summary><div id="poseA"></div></details>
+    </section>
+    <section>
+      <div class="shapehead b"><h3>Shape B</h3><button id="randomB">Random</button><button id="clearSculptB">Undo sculpt</button><button id="resetB">Reset</button></div>
+      <div id="paramsB"></div>
+      <details class="pose"><summary>Pose (rotate / translate) <button id="resetPoseB">Reset pose</button></summary><div id="poseB"></div></details>
+    </section>
+    <section>
+      <h3>Functional map</h3>
+      <label class="slider"><span>Eigenfunctions k</span><input type="range" id="kSlider" min="2" max="100" step="1" value="20"><output>20</output></label>
+      <div class="radio">
+        <label><input type="radio" name="mapMode" value="gt" checked> Ground truth from the known correspondence</label>
+        <label><input type="radio" name="mapMode" value="est"> Estimated from descriptors (2012 method)</label>
+      </div>
+      <div id="estOptions" hidden>
+        <label class="slider"><span>Commutativity μ</span><input type="range" id="muSlider" min="-3" max="2" step="0.05" value="0.477"><output>3.0</output></label>
+        <label class="slider"><span>Landmarks</span><input type="range" id="landmarks" min="0" max="24" step="1" value="12"><output>12</output></label>
+        <label><input type="checkbox" id="icp"> ICP refinement (5 iterations)</label>
+      </div>
+      <label><input type="checkbox" id="alignSigns" checked> Align eigenvector signs of B to A</label>
+    </section>
+    <section>
+      <h3>Visualisation</h3>
+      <label>Mode <select id="vizMode"><option value="eig">Eigenfunctions</option><option value="transfer">Function transfer through C</option><option value="p2p">Point-to-point map from C</option></select></label>
+      <div id="eigOptions"><label class="slider"><span>Index i</span><input type="range" id="eigIndex" min="1" max="20" step="1" value="5"><output>5</output></label></div>
+      <div id="transferOptions" hidden>
+        <label>Function f on A <select id="funcType"><option value="bump">Bump at the green point</option><option value="x">x coordinate</option><option value="y">y coordinate</option><option value="z">z coordinate</option><option value="stripes">Stripes sin(6y)</option><option value="step">Step (left / right)</option></select></label>
+        <label><input type="checkbox" id="showProjected"> Show f projected onto the k-basis on A</label>
+      </div>
+      <div id="p2pOptions" class="radio" hidden>
+        <label><input type="radio" name="p2pDisplay" value="colors" checked> Transferred colours</label>
+        <label><input type="radio" name="p2pDisplay" value="error"> Correspondence error</label>
+      </div>
+    </section>
+  </aside>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script id="numerics-src">
+/* numerics.js — Laplace–Beltrami operator + dense symmetric eigensolver.
+   Self-contained: runs inside a Web Worker or on the main thread. */
+var Numerics = (function () {
+  'use strict';
+
+  /* Cotangent Laplacian L and lumped mass M (normalised to unit area).
+     Returns the symmetric matrix S = M^-1/2 L M^-1/2 as an array of rows. */
+  function buildOperator(pos, faces, n) {
+    const rows = new Array(n);
+    for (let i = 0; i < n; i++) rows[i] = new Float64Array(n);
+    const mass = new Float64Array(n);
+    const F = (faces.length / 3) | 0;
+    let area = 0;
+    for (let f = 0; f < F; f++) {
+      const a = faces[3 * f], b = faces[3 * f + 1], c = faces[3 * f + 2];
+      const ax = pos[3 * a], ay = pos[3 * a + 1], az = pos[3 * a + 2];
+      const bx = pos[3 * b], by = pos[3 * b + 1], bz = pos[3 * b + 2];
+      const cx = pos[3 * c], cy = pos[3 * c + 1], cz = pos[3 * c + 2];
+      const abx = bx - ax, aby = by - ay, abz = bz - az;
+      const acx = cx - ax, acy = cy - ay, acz = cz - az;
+      const bcx = cx - bx, bcy = cy - by, bcz = cz - bz;
+      const nx = aby * acz - abz * acy, ny = abz * acx - abx * acz, nz = abx * acy - aby * acx;
+      const twoA = Math.sqrt(nx * nx + ny * ny + nz * nz);
+      if (twoA < 1e-14) continue;
+      const A = 0.5 * twoA;
+      area += A; mass[a] += A / 3; mass[b] += A / 3; mass[c] += A / 3;
+      const cotA = (abx * acx + aby * acy + abz * acz) / twoA;     // angle at a (opposite edge bc)
+      const cotB = -(abx * bcx + aby * bcy + abz * bcz) / twoA;    // angle at b (opposite edge ac)
+      const cotC = (acx * bcx + acy * bcy + acz * bcz) / twoA;     // angle at c (opposite edge ab)
+      const wbc = 0.5 * cotA, wac = 0.5 * cotB, wab = 0.5 * cotC;
+      rows[b][c] -= wbc; rows[c][b] -= wbc; rows[b][b] += wbc; rows[c][c] += wbc;
+      rows[a][c] -= wac; rows[c][a] -= wac; rows[a][a] += wac; rows[c][c] += wac;
+      rows[a][b] -= wab; rows[b][a] -= wab; rows[a][a] += wab; rows[b][b] += wab;
+    }
+    const inv = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      mass[i] = Math.max(mass[i] / area, 1e-12);
+      inv[i] = 1 / Math.sqrt(mass[i]);
+    }
+    for (let i = 0; i < n; i++) {
+      const r = rows[i], s = inv[i];
+      for (let j = 0; j < n; j++) r[j] *= s * inv[j];
+    }
+    return { S: rows, mass, area };
+  }
+
+  /* Householder tridiagonalisation (EISPACK tred2 via JAMA). V is overwritten
+     with the orthogonal Q such that A = Q T Q^T; d = diag(T), e[i] = T[i][i-1]. */
+  function tred2(V, d, e, n) {
+    for (let j = 0; j < n; j++) d[j] = V[n - 1][j];
+    for (let i = n - 1; i > 0; i--) {
+      let scale = 0, h = 0;
+      for (let k = 0; k < i; k++) scale += Math.abs(d[k]);
+      if (scale === 0) {
+        e[i] = d[i - 1];
+        for (let j = 0; j < i; j++) { d[j] = V[i - 1][j]; V[i][j] = 0; V[j][i] = 0; }
+      } else {
+        for (let k = 0; k < i; k++) { d[k] /= scale; h += d[k] * d[k]; }
+        let f = d[i - 1];
+        let g = Math.sqrt(h);
+        if (f > 0) g = -g;
+        e[i] = scale * g;
+        h -= f * g;
+        d[i - 1] = f - g;
+        for (let j = 0; j < i; j++) e[j] = 0;
+        for (let j = 0; j < i; j++) {
+          f = d[j];
+          V[j][i] = f;
+          g = e[j] + V[j][j] * f;
+          for (let k = j + 1; k <= i - 1; k++) { g += V[k][j] * d[k]; e[k] += V[k][j] * f; }
+          e[j] = g;
+        }
+        f = 0;
+        for (let j = 0; j < i; j++) { e[j] /= h; f += e[j] * d[j]; }
+        const hh = f / (h + h);
+        for (let j = 0; j < i; j++) e[j] -= hh * d[j];
+        for (let j = 0; j < i; j++) {
+          f = d[j]; g = e[j];
+          for (let k = j; k <= i - 1; k++) V[k][j] -= (f * e[k] + g * d[k]);
+          d[j] = V[i - 1][j];
+          V[i][j] = 0;
+        }
+      }
+      d[i] = h;
+    }
+    for (let i = 0; i < n - 1; i++) {
+      V[n - 1][i] = V[i][i];
+      V[i][i] = 1;
+      const h = d[i + 1];
+      if (h !== 0) {
+        for (let k = 0; k <= i; k++) d[k] = V[k][i + 1] / h;
+        for (let j = 0; j <= i; j++) {
+          let g = 0;
+          for (let k = 0; k <= i; k++) g += V[k][i + 1] * V[k][j];
+          for (let k = 0; k <= i; k++) V[k][j] -= g * d[k];
+        }
+      }
+      for (let k = 0; k <= i; k++) V[k][i + 1] = 0;
+    }
+    for (let j = 0; j < n; j++) { d[j] = V[n - 1][j]; V[n - 1][j] = 0; }
+    V[n - 1][n - 1] = 1;
+    e[0] = 0;
+  }
+
+  /* Implicit QL on the tridiagonal (eigenvalues only). d, e are destroyed. */
+  function tql1(d, e, n) {
+    for (let i = 1; i < n; i++) e[i - 1] = e[i];
+    e[n - 1] = 0;
+    let f = 0, tst1 = 0;
+    const eps = Math.pow(2, -52);
+    for (let l = 0; l < n; l++) {
+      tst1 = Math.max(tst1, Math.abs(d[l]) + Math.abs(e[l]));
+      let m = l;
+      while (m < n) { if (Math.abs(e[m]) <= eps * tst1) break; m++; }
+      if (m > l) {
+        let iter = 0;
+        do {
+          iter++;
+          let g = d[l];
+          let p = (d[l + 1] - g) / (2 * e[l]);
+          let r = Math.hypot(p, 1);
+          if (p < 0) r = -r;
+          d[l] = e[l] / (p + r);
+          d[l + 1] = e[l] * (p + r);
+          const dl1 = d[l + 1];
+          let h = g - d[l];
+          for (let i = l + 2; i < n; i++) d[i] -= h;
+          f += h;
+          p = d[m];
+          let c = 1, c2 = c, c3 = c;
+          const el1 = e[l + 1];
+          let s = 0, s2 = 0;
+          for (let i = m - 1; i >= l; i--) {
+            c3 = c2; c2 = c; s2 = s;
+            g = c * e[i]; h = c * p;
+            r = Math.hypot(p, e[i]);
+            e[i + 1] = s * r;
+            s = e[i] / r; c = p / r;
+            p = c * d[i] - s * g;
+            d[i + 1] = h + s * (c * g + s * d[i]);
+          }
+          p = -s * s2 * c3 * el1 * e[l] / dl1;
+          e[l] = s * p;
+          d[l] = c * p;
+        } while (Math.abs(e[l]) > eps * tst1 && iter < 200);
+      }
+      d[l] += f;
+      e[l] = 0;
+    }
+  }
+
+  /* Solve (T - lam I) x = rhs for symmetric tridiagonal T (diag a, off-diag b)
+     by Gaussian elimination with partial pivoting. */
+  function triSolve(a, b, lam, rhs, n, eps3) {
+    const u = new Float64Array(n), v = new Float64Array(n), w = new Float64Array(n);
+    const x = new Float64Array(n);
+    for (let i = 0; i < n; i++) { u[i] = a[i] - lam; v[i] = i < n - 1 ? b[i] : 0; x[i] = rhs[i]; }
+    for (let i = 0; i < n - 1; i++) {
+      let l = b[i];
+      if (Math.abs(l) > Math.abs(u[i])) {
+        let t;
+        t = u[i]; u[i] = l; l = t;
+        t = v[i]; v[i] = u[i + 1]; u[i + 1] = t;
+        t = w[i]; w[i] = v[i + 1]; v[i + 1] = t;
+        t = x[i]; x[i] = x[i + 1]; x[i + 1] = t;
+      }
+      if (u[i] === 0) u[i] = eps3;
+      const m = l / u[i];
+      u[i + 1] -= m * v[i];
+      v[i + 1] -= m * w[i];
+      x[i + 1] -= m * x[i];
+    }
+    if (u[n - 1] === 0) u[n - 1] = eps3;
+    x[n - 1] /= u[n - 1];
+    if (n > 1) x[n - 2] = (x[n - 2] - v[n - 2] * x[n - 1]) / u[n - 2];
+    for (let i = n - 3; i >= 0; i--) x[i] = (x[i] - v[i] * x[i + 1] - w[i] * x[i + 2]) / u[i];
+    return x;
+  }
+
+  /* kmax smallest eigenpairs of the dense symmetric matrix S (rows; destroyed). */
+  function symEig(S, n, kmax) {
+    kmax = Math.min(kmax, n);
+    const d = new Float64Array(n), e = new Float64Array(n);
+    tred2(S, d, e, n);
+    const a = Float64Array.from(d);
+    const b = new Float64Array(Math.max(n - 1, 1));
+    for (let i = 1; i < n; i++) b[i - 1] = e[i];
+    tql1(d, e, n);
+    const order = Array.from({ length: n }, (_, i) => i).sort((p, q) => d[p] - d[q]);
+    const evals = new Float64Array(kmax);
+    for (let i = 0; i < kmax; i++) evals[i] = d[order[i]];
+
+    let norm = 0;
+    for (let i = 0; i < n; i++) {
+      const t = Math.abs(a[i]) + (i > 0 ? Math.abs(b[i - 1]) : 0) + (i < n - 1 ? Math.abs(b[i]) : 0);
+      if (t > norm) norm = t;
+    }
+    const eps3 = Math.pow(2, -52) * Math.max(norm, 1e-300);
+
+    // Inverse iteration on the tridiagonal, orthogonalising against earlier vectors.
+    const Z = [];
+    let seed = 12345;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296 - 0.5; };
+    for (let i = 0; i < kmax; i++) {
+      let x = new Float64Array(n);
+      for (let r = 0; r < n; r++) x[r] = 1 + rnd();
+      for (let it = 0; it < 4; it++) {
+        x = triSolve(a, b, evals[i], x, n, eps3);
+        for (let j = 0; j < i; j++) {
+          const zj = Z[j];
+          let dot = 0;
+          for (let r = 0; r < n; r++) dot += zj[r] * x[r];
+          for (let r = 0; r < n; r++) x[r] -= dot * zj[r];
+        }
+        let nn = 0;
+        for (let r = 0; r < n; r++) nn += x[r] * x[r];
+        nn = Math.sqrt(nn) || 1;
+        for (let r = 0; r < n; r++) x[r] /= nn;
+      }
+      Z.push(x);
+    }
+    // Back-transform: y = Q z
+    const evecs = new Float64Array(kmax * n);
+    for (let i = 0; i < kmax; i++) {
+      const z = Z[i], off = i * n;
+      for (let r = 0; r < n; r++) {
+        const row = S[r];
+        let s = 0;
+        for (let m = 0; m < n; m++) s += row[m] * z[m];
+        evecs[off + r] = s;
+      }
+    }
+    return { evals, evecs };
+  }
+
+  /* Full pipeline: positions + faces -> M-orthonormal Laplace–Beltrami basis. */
+  function spectrum(pos, faces, n, kmax) {
+    const op = buildOperator(pos, faces, n);
+    const { evals, evecs } = symEig(op.S, n, kmax);
+    const k = evals.length;
+    for (let i = 0; i < k; i++) {
+      const off = i * n;
+      for (let r = 0; r < n; r++) evecs[off + r] /= Math.sqrt(op.mass[r]);
+    }
+    for (let i = 0; i < k; i++) if (Math.abs(evals[i]) < 1e-9) evals[i] = Math.abs(evals[i]);
+    return { evals, evecs, mass: op.mass, area: op.area };
+  }
+
+  return { buildOperator, symEig, spectrum };
+})();
+if (typeof module !== 'undefined') module.exports = Numerics;
+
+</script>
+<script>
+/* meshgen.js — base meshes with shared connectivity (no DOM dependencies). */
+var MeshGen = (function () {
+  'use strict';
+
+  function fixOrientation(pos, faces) {
+    let vol = 0;
+    for (let f = 0; f < faces.length; f += 3) {
+      const a = faces[f], b = faces[f + 1], c = faces[f + 2];
+      const ax = pos[3 * a], ay = pos[3 * a + 1], az = pos[3 * a + 2];
+      const bx = pos[3 * b], by = pos[3 * b + 1], bz = pos[3 * b + 2];
+      const cx = pos[3 * c], cy = pos[3 * c + 1], cz = pos[3 * c + 2];
+      vol += ax * (by * cz - bz * cy) + ay * (bz * cx - bx * cz) + az * (bx * cy - by * cx);
+    }
+    if (vol < 0) for (let f = 0; f < faces.length; f += 3) { const t = faces[f + 1]; faces[f + 1] = faces[f + 2]; faces[f + 2] = t; }
+  }
+
+  /* Geodesic sphere of frequency f: 10 f^2 + 2 vertices. */
+  function icosphere(freq) {
+    const t = (1 + Math.sqrt(5)) / 2;
+    const base = [[-1, t, 0], [1, t, 0], [-1, -t, 0], [1, -t, 0], [0, -1, t], [0, 1, t], [0, -1, -t], [0, 1, -t], [t, 0, -1], [t, 0, 1], [-t, 0, -1], [-t, 0, 1]]
+      .map(p => { const l = Math.hypot(p[0], p[1], p[2]); return [p[0] / l, p[1] / l, p[2] / l]; });
+    const tri = [[0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11], [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8], [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9], [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1]];
+    const out = [], faces = [], map = new Map();
+    const getIndex = (x, y, z) => {
+      const l = Math.hypot(x, y, z); x /= l; y /= l; z /= l;
+      const key = Math.round(x * 1e6) + ',' + Math.round(y * 1e6) + ',' + Math.round(z * 1e6);
+      let id = map.get(key);
+      if (id === undefined) { id = out.length / 3; out.push(x, y, z); map.set(key, id); }
+      return id;
+    };
+    for (const [ia, ib, ic] of tri) {
+      const A = base[ia], B = base[ib], C = base[ic];
+      const grid = [];
+      for (let i = 0; i <= freq; i++) {
+        grid.push([]);
+        for (let j = 0; j <= freq - i; j++) {
+          const wa = (freq - i - j) / freq, wb = i / freq, wc = j / freq;
+          grid[i].push(getIndex(wa * A[0] + wb * B[0] + wc * C[0], wa * A[1] + wb * B[1] + wc * C[1], wa * A[2] + wb * B[2] + wc * C[2]));
+        }
+      }
+      for (let i = 0; i < freq; i++) {
+        for (let j = 0; j < freq - i; j++) {
+          faces.push(grid[i][j], grid[i + 1][j], grid[i][j + 1]);
+          if (j < freq - i - 1) faces.push(grid[i + 1][j], grid[i + 1][j + 1], grid[i][j + 1]);
+        }
+      }
+    }
+    const pos = Float32Array.from(out), fc = Uint32Array.from(faces);
+    fixOrientation(pos, fc);
+    return { pos, faces: fc, n: pos.length / 3 };
+  }
+
+  /* Generic smooth shape without symmetries: the Laplacian spectrum is simple,
+     so functional maps of near-isometries read as near-diagonal matrices. */
+  function blob(freq) {
+    const m = icosphere(freq), p = m.pos;
+    for (let v = 0; v < m.n; v++) {
+      const x = p[3 * v], y = p[3 * v + 1], z = p[3 * v + 2];
+      const r = 1 + 0.17 * Math.sin(2.3 * x + 0.5) * Math.cos(1.9 * y - 0.3) + 0.13 * Math.sin(1.6 * z + 1.7) * Math.cos(2.4 * x + 0.9) + 0.08 * Math.cos(3.1 * y + 0.2);
+      p[3 * v] = r * x * 1.05; p[3 * v + 1] = r * y * 0.88; p[3 * v + 2] = r * z * 0.74;
+    }
+    fixOrientation(p, m.faces);
+    return m;
+  }
+
+  /* ---------------- procedural cat: implicit surface + surface nets ---------------- */
+  const clamp01 = (t) => Math.max(0, Math.min(1, t));
+  function sdCapsule(px, py, pz, ax, ay, az, bx, by, bz, r0, r1) {
+    const bax = bx - ax, bay = by - ay, baz = bz - az;
+    const pax = px - ax, pay = py - ay, paz = pz - az;
+    const h = clamp01((pax * bax + pay * bay + paz * baz) / (bax * bax + bay * bay + baz * baz));
+    return Math.hypot(pax - bax * h, pay - bay * h, paz - baz * h) - (r0 + (r1 - r0) * h);
+  }
+  function sdEllipsoid(px, py, pz, cx, cy, cz, rx, ry, rz) {
+    const x = (px - cx) / rx, y = (py - cy) / ry, z = (pz - cz) / rz;
+    const k0 = Math.hypot(x, y, z), k1 = Math.hypot(x / rx, y / ry, z / rz);
+    return k1 > 0 ? k0 * (k0 - 1) / k1 : -Math.min(rx, ry, rz);
+  }
+  function smin(a, b, k) { const h = Math.max(k - Math.abs(a - b), 0) / k; return Math.min(a, b) - h * h * k * 0.25; }
+  function catSDF(x, y, z) {
+    let d = sdEllipsoid(x, y, z, -0.05, 0.02, 0, 0.62, 0.30, 0.27);                  // body
+    d = smin(d, sdEllipsoid(x, y, z, 0.36, 0.06, 0, 0.32, 0.30, 0.25), 0.15);        // chest
+    d = smin(d, sdCapsule(x, y, z, 0.45, 0.12, 0, 0.72, 0.42, 0, 0.17, 0.16), 0.12);  // neck
+    d = smin(d, sdEllipsoid(x, y, z, 0.86, 0.55, 0, 0.27, 0.25, 0.24), 0.08);        // head
+    d = smin(d, sdEllipsoid(x, y, z, 1.06, 0.46, 0, 0.14, 0.11, 0.13), 0.06);        // muzzle
+    for (const s of [-1, 1]) {
+      d = smin(d, sdEllipsoid(x, y, z, 0.80, 0.84, s * 0.19, 0.10, 0.19, 0.09), 0.05);              // ears
+      d = smin(d, sdCapsule(x, y, z, 0.40, 0.0, s * 0.21, 0.42, -0.58, s * 0.22, 0.11, 0.10), 0.08); // front legs
+      d = smin(d, sdCapsule(x, y, z, -0.42, 0.0, s * 0.22, -0.46, -0.58, s * 0.23, 0.12, 0.10), 0.08); // back legs
+      d = smin(d, sdEllipsoid(x, y, z, -0.42, -0.08, s * 0.22, 0.22, 0.24, 0.12), 0.08);            // thighs
+      d = smin(d, sdEllipsoid(x, y, z, 0.46, -0.62, s * 0.22, 0.14, 0.09, 0.11), 0.05);            // front paws
+      d = smin(d, sdEllipsoid(x, y, z, -0.42, -0.62, s * 0.23, 0.15, 0.09, 0.11), 0.05);           // back paws
+    }
+    const tail = [[-0.62, 0.05, 0], [-0.92, 0.10, 0.06], [-1.06, 0.40, 0.12], [-1.00, 0.72, 0.18], [-0.86, 0.90, 0.22]];
+    for (let i = 0; i < tail.length - 1; i++) {
+      const a = tail[i], b = tail[i + 1];
+      d = smin(d, sdCapsule(x, y, z, a[0], a[1], a[2], b[0], b[1], b[2], 0.10 - 0.006 * i, 0.10 - 0.006 * (i + 1)), 0.06);
+    }
+    d = smin(d, sdEllipsoid(x, y, z, -0.86, 0.90, 0.22, 0.09, 0.09, 0.09), 0.06);          // tail tip
+    return d;
+  }
+  /* Manifold surface nets on a regular grid: one vertex per connected component
+     of inside corners in each cell, then Laplacian smoothing re-projected onto
+     the implicit surface. */
+  function surfaceNets(sdf, lo, hi, h, smoothIters) {
+    const nx = Math.ceil((hi[0] - lo[0]) / h), ny = Math.ceil((hi[1] - lo[1]) / h), nz = Math.ceil((hi[2] - lo[2]) / h);
+    const NX = nx + 1, NY = ny + 1, NZ = nz + 1;
+    const val = new Float32Array(NX * NY * NZ);
+    const cid = (i, j, k) => (i * NY + j) * NZ + k;
+    for (let i = 0; i < NX; i++) for (let j = 0; j < NY; j++) for (let k = 0; k < NZ; k++) val[cid(i, j, k)] = sdf(lo[0] + i * h, lo[1] + j * h, lo[2] + k * h);
+    // corner c of a cell: bits (x, y, z) = (c & 1, (c >> 1) & 1, (c >> 2) & 1)
+    const cornerVert = new Int32Array(nx * ny * nz * 8).fill(-1);   // vertex id for the component of each inside corner
+    const vid = (i, j, k) => (i * ny + j) * nz + k;
+    const CUBE_EDGES = [];
+    for (let c = 0; c < 8; c++) for (const bit of [1, 2, 4]) if (!(c & bit)) CUBE_EDGES.push([c, c | bit]);
+    const pos = [];
+    const comp = new Int32Array(8), sx = new Float64Array(8), sy = new Float64Array(8), sz = new Float64Array(8), cnt = new Int32Array(8);
+    const find = (a) => { while (comp[a] !== a) a = comp[a]; return a; };
+    for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++) for (let k = 0; k < nz; k++) {
+      const cv = new Float32Array(8);
+      let inside = 0;
+      for (let c = 0; c < 8; c++) { cv[c] = val[cid(i + (c & 1), j + ((c >> 1) & 1), k + ((c >> 2) & 1))]; if (cv[c] < 0) inside++; }
+      if (inside === 0 || inside === 8) continue;
+      for (let c = 0; c < 8; c++) { comp[c] = c; sx[c] = sy[c] = sz[c] = 0; cnt[c] = 0; }
+      for (const [a, b] of CUBE_EDGES) if (cv[a] < 0 && cv[b] < 0) { const ra = find(a), rb = find(b); if (ra !== rb) comp[ra] = rb; }
+      for (const [a, b] of CUBE_EDGES) {
+        if ((cv[a] < 0) === (cv[b] < 0)) continue;
+        const t = cv[a] / (cv[a] - cv[b]);
+        const r = find(cv[a] < 0 ? a : b);
+        sx[r] += (a & 1) + ((b & 1) - (a & 1)) * t; sy[r] += ((a >> 1) & 1) + (((b >> 1) & 1) - ((a >> 1) & 1)) * t; sz[r] += ((a >> 2) & 1) + (((b >> 2) & 1) - ((a >> 2) & 1)) * t; cnt[r]++;
+      }
+      const base = vid(i, j, k) * 8;
+      for (let c = 0; c < 8; c++) {
+        if (cv[c] >= 0) continue;
+        const r = find(c);
+        if (cornerVert[base + r] < 0) { cornerVert[base + r] = pos.length / 3; pos.push(lo[0] + (i + sx[r] / cnt[r]) * h, lo[1] + (j + sy[r] / cnt[r]) * h, lo[2] + (k + sz[r] / cnt[r]) * h); }
+        cornerVert[base + c] = cornerVert[base + r];
+      }
+    }
+    // quads: one per grid edge crossing the surface, joining the 4 cells around it
+    const quads = [];
+    const vertOf = (i, j, k, c) => (i < 0 || j < 0 || k < 0 || i >= nx || j >= ny || k >= nz) ? -1 : cornerVert[vid(i, j, k) * 8 + c];
+    const addQuad = (a, b, c, d, flip) => { if (a < 0 || b < 0 || c < 0 || d < 0) return; quads.push(flip ? [d, c, b, a] : [a, b, c, d]); };
+    for (let i = 0; i < NX; i++) for (let j = 0; j < NY; j++) for (let k = 0; k < NZ; k++) {
+      const v0 = val[cid(i, j, k)];
+      // x edge (i,j,k)-(i+1,j,k): inside endpoint corner index in each of the 4 cells around it
+      if (i < nx) {
+        const v1 = val[cid(i + 1, j, k)];
+        if ((v0 < 0) !== (v1 < 0)) {
+          const ci = v0 < 0 ? 0 : 1;   // local x bit of the inside endpoint
+          addQuad(vertOf(i, j - 1, k - 1, ci | 2 | 4), vertOf(i, j, k - 1, ci | 0 | 4), vertOf(i, j, k, ci | 0 | 0), vertOf(i, j - 1, k, ci | 2 | 0), v0 >= 0);
+        }
+      }
+      if (j < ny) {
+        const v1 = val[cid(i, j + 1, k)];
+        if ((v0 < 0) !== (v1 < 0)) {
+          const cj = v0 < 0 ? 0 : 2;
+          addQuad(vertOf(i - 1, j, k - 1, 1 | cj | 4), vertOf(i - 1, j, k, 1 | cj | 0), vertOf(i, j, k, 0 | cj | 0), vertOf(i, j, k - 1, 0 | cj | 4), v0 >= 0);
+        }
+      }
+      if (k < nz) {
+        const v1 = val[cid(i, j, k + 1)];
+        if ((v0 < 0) !== (v1 < 0)) {
+          const ck = v0 < 0 ? 0 : 4;
+          addQuad(vertOf(i - 1, j - 1, k, 1 | 2 | ck), vertOf(i, j - 1, k, 0 | 2 | ck), vertOf(i, j, k, 0 | 0 | ck), vertOf(i - 1, j, k, 1 | 0 | ck), v0 >= 0);
+        }
+      }
+    }
+    const n = pos.length / 3, P = Float32Array.from(pos);
+    const triangulate = () => {
+      const faces = [];
+      const minAngle = (a, b, c) => {
+        const ux = P[3 * b] - P[3 * a], uy = P[3 * b + 1] - P[3 * a + 1], uz = P[3 * b + 2] - P[3 * a + 2];
+        const vx = P[3 * c] - P[3 * a], vy = P[3 * c + 1] - P[3 * a + 1], vz = P[3 * c + 2] - P[3 * a + 2];
+        const wx = P[3 * c] - P[3 * b], wy = P[3 * c + 1] - P[3 * b + 1], wz = P[3 * c + 2] - P[3 * b + 2];
+        const lu = Math.hypot(ux, uy, uz), lv = Math.hypot(vx, vy, vz), lw = Math.hypot(wx, wy, wz);
+        const A = Math.acos(Math.max(-1, Math.min(1, (ux * vx + uy * vy + uz * vz) / (lu * lv || 1))));
+        const B = Math.acos(Math.max(-1, Math.min(1, (-ux * wx - uy * wy - uz * wz) / (lu * lw || 1))));
+        return Math.min(A, B, Math.PI - A - B);
+      };
+      for (const [a, b, c, d] of quads) {
+        const m1 = Math.min(minAngle(a, b, c), minAngle(a, c, d)), m2 = Math.min(minAngle(a, b, d), minAngle(b, c, d));
+        if (m1 >= m2) faces.push(a, b, c, a, c, d); else faces.push(a, b, d, b, c, d);
+      }
+      return faces;
+    };
+    const grad = (x, y, z) => { const e = 1e-3; return [(sdf(x + e, y, z) - sdf(x - e, y, z)) / (2 * e), (sdf(x, y + e, z) - sdf(x, y - e, z)) / (2 * e), (sdf(x, y, z + e) - sdf(x, y, z - e)) / (2 * e)]; };
+    let faces = triangulate();
+    for (let it = 0; it < smoothIters; it++) {
+      const nbr = Array.from({ length: n }, () => new Set());
+      for (let f = 0; f < faces.length; f += 3) for (let e = 0; e < 3; e++) { const a = faces[f + e], b = faces[f + (e + 1) % 3]; nbr[a].add(b); nbr[b].add(a); }
+      const Q = new Float32Array(3 * n);
+      for (let v = 0; v < n; v++) {
+        let x = 0, y = 0, z = 0; for (const u of nbr[v]) { x += P[3 * u]; y += P[3 * u + 1]; z += P[3 * u + 2]; }
+        const m = nbr[v].size || 1;
+        x = 0.4 * P[3 * v] + 0.6 * x / m; y = 0.4 * P[3 * v + 1] + 0.6 * y / m; z = 0.4 * P[3 * v + 2] + 0.6 * z / m;
+        for (let s = 0; s < 2; s++) { const d = sdf(x, y, z), g = grad(x, y, z), gl = g[0] * g[0] + g[1] * g[1] + g[2] * g[2] || 1; x -= d * g[0] / gl; y -= d * g[1] / gl; z -= d * g[2] / gl; }
+        Q[3 * v] = x; Q[3 * v + 1] = y; Q[3 * v + 2] = z;
+      }
+      P.set(Q);
+      if (it % 3 === 2 || it === smoothIters - 1) faces = triangulate();
+    }
+    // edge flips that raise the minimum angle of the two adjacent triangles
+    const tri = []; for (let f = 0; f < faces.length; f += 3) tri.push([faces[f], faces[f + 1], faces[f + 2]]);
+    const angMin = (a, b, c) => {
+      const L = (u, v) => Math.hypot(P[3 * u] - P[3 * v], P[3 * u + 1] - P[3 * v + 1], P[3 * u + 2] - P[3 * v + 2]);
+      const ab = L(a, b), bc = L(b, c), ca = L(c, a);
+      const A = Math.acos(Math.max(-1, Math.min(1, (ab * ab + ca * ca - bc * bc) / (2 * ab * ca || 1))));
+      const B = Math.acos(Math.max(-1, Math.min(1, (ab * ab + bc * bc - ca * ca) / (2 * ab * bc || 1))));
+      return Math.min(A, B, Math.PI - A - B);
+    };
+    for (let sweep = 0; sweep < 4; sweep++) {
+      const edgeFaces = new Map();
+      const ekey = (a, b) => a < b ? a * n + b : b * n + a;
+      tri.forEach((t, fi) => { for (let e = 0; e < 3; e++) { const k = ekey(t[e], t[(e + 1) % 3]); if (!edgeFaces.has(k)) edgeFaces.set(k, []); edgeFaces.get(k).push(fi); } });
+      let flips = 0;
+      const touched = new Set();
+      for (const [k, fs] of edgeFaces) {
+        if (fs.length !== 2 || touched.has(fs[0]) || touched.has(fs[1])) continue;
+        const f = tri[fs[0]], g = tri[fs[1]];
+        const a = Math.floor(k / n), b = k % n;
+        const c = f.find(v => v !== a && v !== b), d = g.find(v => v !== a && v !== b);
+        if (c === undefined || d === undefined || c === d || edgeFaces.has(ekey(c, d))) continue;
+        const cur = Math.min(angMin(a, b, c), angMin(a, b, d));
+        const alt = Math.min(angMin(c, d, a), angMin(c, d, b));
+        if (alt <= cur + 1e-6) continue;
+        // orient: f contains edge (x -> y); f' = (x, d, c)-ish keeping the original winding
+        const ia = f.indexOf(a), x = f[ia], y = f[(ia + 1) % 3] === b ? b : a;
+        const u = y === b ? a : b, w = y;     // f has edge u -> w
+        f[0] = u; f[1] = d; f[2] = c;
+        g[0] = w; g[1] = c; g[2] = d;
+        edgeFaces.set(ekey(c, d), fs); touched.add(fs[0]); touched.add(fs[1]);
+        flips++;
+      }
+      if (!flips) break;
+    }
+    const fc = Uint32Array.from(tri.flat());
+    fixOrientation(P, fc);
+    return { pos: P, faces: fc, n };
+  }
+  function cat(h) {
+    const m = surfaceNets(catSDF, [-1.35, -0.95, -0.55], [1.45, 1.25, 0.55], h, 10);
+    // centre and scale to a unit-ish size
+    let cx = 0, cy = 0, cz = 0; for (let v = 0; v < m.n; v++) { cx += m.pos[3 * v]; cy += m.pos[3 * v + 1]; cz += m.pos[3 * v + 2]; }
+    cx /= m.n; cy /= m.n; cz /= m.n;
+    for (let v = 0; v < m.n; v++) { m.pos[3 * v] = (m.pos[3 * v] - cx) * 0.95; m.pos[3 * v + 1] = (m.pos[3 * v + 1] - cy) * 0.95; m.pos[3 * v + 2] = (m.pos[3 * v + 2] - cz) * 0.95; }
+    return m;
+  }
+
+  function torus(nu, nv, R = 1.0, r = 0.42) {
+    const pos = new Float32Array(nu * nv * 3), faces = [];
+    for (let i = 0; i < nu; i++) {
+      const u = 2 * Math.PI * i / nu;
+      for (let j = 0; j < nv; j++) {
+        const v = 2 * Math.PI * j / nv, id = i * nv + j;
+        pos[3 * id] = (R + r * Math.cos(v)) * Math.cos(u);
+        pos[3 * id + 1] = r * Math.sin(v);
+        pos[3 * id + 2] = (R + r * Math.cos(v)) * Math.sin(u);
+      }
+    }
+    for (let i = 0; i < nu; i++) for (let j = 0; j < nv; j++) {
+      const a = i * nv + j, b = ((i + 1) % nu) * nv + j, c = i * nv + (j + 1) % nv, d = ((i + 1) % nu) * nv + (j + 1) % nv;
+      faces.push(a, b, d, a, d, c);
+    }
+    const fc = Uint32Array.from(faces);
+    fixOrientation(pos, fc);
+    return { pos, faces: fc, n: nu * nv };
+  }
+
+  function vertexNormals(pos, faces, n) {
+    const nrm = new Float32Array(3 * n);
+    for (let f = 0; f < faces.length; f += 3) {
+      const a = faces[f], b = faces[f + 1], c = faces[f + 2];
+      const abx = pos[3 * b] - pos[3 * a], aby = pos[3 * b + 1] - pos[3 * a + 1], abz = pos[3 * b + 2] - pos[3 * a + 2];
+      const acx = pos[3 * c] - pos[3 * a], acy = pos[3 * c + 1] - pos[3 * a + 1], acz = pos[3 * c + 2] - pos[3 * a + 2];
+      const nx = aby * acz - abz * acy, ny = abz * acx - abx * acz, nz = abx * acy - aby * acx;
+      for (const v of [a, b, c]) { nrm[3 * v] += nx; nrm[3 * v + 1] += ny; nrm[3 * v + 2] += nz; }
+    }
+    for (let v = 0; v < n; v++) {
+      const l = Math.hypot(nrm[3 * v], nrm[3 * v + 1], nrm[3 * v + 2]) || 1;
+      nrm[3 * v] /= l; nrm[3 * v + 1] /= l; nrm[3 * v + 2] /= l;
+    }
+    return nrm;
+  }
+
+  /* Deterministic farthest-point sampling (Euclidean). */
+  function farthestPoints(pos, n, count) {
+    const picked = [0];
+    const dist = new Float64Array(n).fill(Infinity);
+    while (picked.length < count) {
+      const p = picked[picked.length - 1];
+      let best = -1, bi = 0;
+      for (let v = 0; v < n; v++) {
+        const dx = pos[3 * v] - pos[3 * p], dy = pos[3 * v + 1] - pos[3 * p + 1], dz = pos[3 * v + 2] - pos[3 * p + 2];
+        const d = dx * dx + dy * dy + dz * dz;
+        if (d < dist[v]) dist[v] = d;
+        if (dist[v] > best) { best = dist[v]; bi = v; }
+      }
+      picked.push(bi);
+    }
+    return Int32Array.from(picked);
+  }
+
+  return { icosphere, blob, cat, torus, surfaceNets, vertexNormals, farthestPoints };
+})();
+if (typeof module !== 'undefined') module.exports = MeshGen;
+
+</script>
+<script>
+/* app.js — Functional map visualizer (Ovsjanikov et al. 2012) */
+/* global THREE, Numerics, MeshGen */
+(function () {
+'use strict';
+const $ = (id) => document.getElementById(id);
+const KMAX = 100;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+
+/* ------------------------------------------------------------------ colour */
+function hexRGB(h) { return [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255]; }
+const DIV_STOPS = [hexRGB('#1f5fb8'), hexRGB('#6fa3e8'), hexRGB('#d9d9d3'), hexRGB('#ef8f6a'), hexRGB('#b8261f')];
+const SEQ_STOPS = [hexRGB('#f2f2ee'), hexRGB('#f6c7a1'), hexRGB('#ea7d4a'), hexRGB('#b8261f'), hexRGB('#5a0d0a')];
+function ramp(stops, t) {
+  t = clamp(t, 0, 1) * (stops.length - 1);
+  const i = Math.min(Math.floor(t), stops.length - 2), f = t - i;
+  const a = stops[i], b = stops[i + 1];
+  return [lerp(a[0], b[0], f), lerp(a[1], b[1], f), lerp(a[2], b[2], f)];
+}
+const diverging = (v) => ramp(DIV_STOPS, 0.5 + 0.5 * clamp(v, -1, 1));   // v in [-1,1]
+const sequential = (t) => ramp(SEQ_STOPS, t);                             // t in [0,1]
+function cssRGB(c) { return `rgb(${Math.round(c[0] * 255)},${Math.round(c[1] * 255)},${Math.round(c[2] * 255)})`; }
+
+/* ------------------------------------------------------------- deformation */
+const PARAM_DEFS = [
+  { key: 'sx', label: 'Scale X', min: 0.4, max: 2, step: 0.01, def: 1 },
+  { key: 'sy', label: 'Scale Y', min: 0.4, max: 2, step: 0.01, def: 1 },
+  { key: 'sz', label: 'Scale Z', min: 0.4, max: 2, step: 0.01, def: 1 },
+  { key: 'bend', label: 'Bend', min: -1.6, max: 1.6, step: 0.01, def: 0 },
+  { key: 'twist', label: 'Twist', min: -2.5, max: 2.5, step: 0.01, def: 0 },
+  { key: 'taper', label: 'Taper', min: -0.8, max: 0.8, step: 0.01, def: 0 },
+  { key: 'bumps', label: 'Bumps', min: -0.6, max: 0.6, step: 0.01, def: 0 },
+  { key: 'wobble', label: 'Wobble', min: 0, max: 0.35, step: 0.005, def: 0 },
+  { key: 'wfreq', label: 'Wobble freq.', min: 1, max: 8, step: 0.1, def: 3 },
+  { key: 'box', label: 'Boxiness', min: 0, max: 1, step: 0.01, def: 0 },
+];
+const defaultParams = () => Object.fromEntries(PARAM_DEFS.map(p => [p.key, p.def]));
+const POSE_DEFS = [
+  { key: 'rx', label: 'Rotate X', min: -180, max: 180, step: 1, def: 0 },
+  { key: 'ry', label: 'Rotate Y', min: -180, max: 180, step: 1, def: 0 },
+  { key: 'rz', label: 'Rotate Z', min: -180, max: 180, step: 1, def: 0 },
+  { key: 'tx', label: 'Move X', min: -1.5, max: 1.5, step: 0.01, def: 0 },
+  { key: 'ty', label: 'Move Y', min: -1.5, max: 1.5, step: 0.01, def: 0 },
+  { key: 'tz', label: 'Move Z', min: -1.5, max: 1.5, step: 0.01, def: 0 },
+];
+const defaultPose = () => Object.fromEntries(POSE_DEFS.map(p => [p.key, p.def]));
+const DEG = Math.PI / 180;
+function poseQuaternion(pose) { return new THREE.Quaternion().setFromEuler(new THREE.Euler(pose.rx * DEG, pose.ry * DEG, pose.rz * DEG, 'ZYX')); }
+function setPoseFromQuaternion(shape, q) {
+  const e = new THREE.Euler().setFromQuaternion(q, 'ZYX');
+  shape.pose.rx = e.x / DEG; shape.pose.ry = e.y / DEG; shape.pose.rz = e.z / DEG;
+}
+
+function applyDeform(shape) {
+  const { pos: bp, normals: bn, n, bumpCenters } = base;
+  const p = shape.params, out = shape.posNoSculpt;
+  const bc = bumpCenters.map(v => [bp[3 * v], bp[3 * v + 1], bp[3 * v + 2]]);
+  const kappa = p.bend, R = Math.abs(kappa) > 1e-6 ? 1 / kappa : 0;
+  for (let v = 0; v < n; v++) {
+    let x = bp[3 * v], y = bp[3 * v + 1], z = bp[3 * v + 2];
+    const nx = bn[3 * v], ny = bn[3 * v + 1], nz = bn[3 * v + 2];
+    // boxiness: push towards the cube shell of the same radius
+    if (p.box > 0) {
+      const r = Math.hypot(x, y, z), s = Math.max(Math.abs(x), Math.abs(y), Math.abs(z)) || 1;
+      const f = (1 - p.box) + p.box * (r / s);
+      x *= f; y *= f; z *= f;
+    }
+    // bumps + wobble along the base normal
+    let disp = 0;
+    if (p.bumps !== 0) {
+      for (const c of bc) {
+        const dx = bp[3 * v] - c[0], dy = bp[3 * v + 1] - c[1], dz = bp[3 * v + 2] - c[2];
+        disp += p.bumps * Math.exp(-(dx * dx + dy * dy + dz * dz) / (2 * 0.28 * 0.28));
+      }
+    }
+    if (p.wobble > 0) {
+      const f = p.wfreq;
+      disp += p.wobble * (Math.sin(f * x + 0.3) * Math.cos(1.3 * f * y) + 0.5 * Math.sin(1.7 * f * z + 1.1));
+    }
+    x += disp * nx; y += disp * ny; z += disp * nz;
+    // scale, taper, twist, bend
+    x *= p.sx; y *= p.sy; z *= p.sz;
+    if (p.taper !== 0) { const t = Math.max(0.1, 1 + p.taper * y); x *= t; z *= t; }
+    if (p.twist !== 0) { const a = p.twist * y, c = Math.cos(a), s = Math.sin(a); const x2 = c * x - s * z; z = s * x + c * z; x = x2; }
+    if (R !== 0) { const a = y * kappa, y2 = (R + z) * Math.sin(a); z = (R + z) * Math.cos(a) - R; y = y2; }
+    out[3 * v] = x; out[3 * v + 1] = y; out[3 * v + 2] = z;
+  }
+  composePositions(shape);
+}
+/* pos = R(pose) · (deformed + sculpt) + t — a rigid motion, which leaves C unchanged */
+function composePositions(shape) {
+  const n = base.n, s = shape.sculpt, a = shape.posNoSculpt, out = shape.pos, p = shape.pose;
+  const m = new THREE.Matrix4().makeRotationFromQuaternion(poseQuaternion(p)).elements;
+  for (let v = 0; v < n; v++) {
+    const x = a[3 * v] + s[3 * v], y = a[3 * v + 1] + s[3 * v + 1], z = a[3 * v + 2] + s[3 * v + 2];
+    out[3 * v] = m[0] * x + m[4] * y + m[8] * z + p.tx;
+    out[3 * v + 1] = m[1] * x + m[5] * y + m[9] * z + p.ty;
+    out[3 * v + 2] = m[2] * x + m[6] * y + m[10] * z + p.tz;
+  }
+}
+
+/* ------------------------------------------------------------------- state */
+let base = null;
+const shapes = [0, 1].map(i => ({
+  idx: i, name: i ? 'B' : 'A', params: defaultParams(), pose: defaultPose(), sculpt: null, posNoSculpt: null, pos: null,
+  eig: null, busy: false, pending: false, reqId: 0, timer: null, wks: null, wksKey: null, computeMs: 0,
+}));
+shapes[1].params.bend = 0.3; shapes[1].params.taper = 0.1;
+
+const ui = {
+  k: 20, mapMode: 'gt', mu: 3, nLandmarks: 12, icp: false, alignSigns: true,
+  viz: 'eig', eigIndex: 5, funcType: 'bump', showProjected: false, p2pDisplay: 'colors',
+  srcVertex: 0, tool: 'orbit', brush: 0.35, linkViews: true, wireframe: false,
+};
+const map = { C: null, Cgt: null, Cest: null, T: null, ev2: null, stats: null, hover: null, locked: null };
+
+/* ---------------------------------------------------------------- workers */
+const WORKER_GLUE = `
+self.onmessage = function (ev) {
+  var m = ev.data, t0 = Date.now();
+  var r = Numerics.spectrum(m.pos, m.faces, m.pos.length / 3, m.kmax);
+  self.postMessage({ id: m.id, evals: r.evals, evecs: r.evecs, mass: r.mass, area: r.area, ms: Date.now() - t0 },
+    [r.evals.buffer, r.evecs.buffer, r.mass.buffer]);
+};`;
+let useWorker = true;
+function makeWorker(shape) {
+  try {
+    const src = $('numerics-src').textContent + '\n' + WORKER_GLUE;
+    const w = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+    w.onmessage = (e) => onEigResult(shape, e.data);
+    w.onerror = () => {
+      if (useWorker) { useWorker = false; setStatus('Web Worker unavailable, computing on the main thread'); }
+      shapes.forEach(s => { if (s.busy) runMainThread(s); });
+    };
+    return w;
+  } catch (err) { useWorker = false; return null; }
+}
+function runMainThread(shape) {
+  setTimeout(() => {
+    const t0 = performance.now();
+    const r = Numerics.spectrum(Float64Array.from(shape.pos), base.faces, base.n, KMAX);
+    onEigResult(shape, { id: shape.reqId, evals: r.evals, evecs: r.evecs, mass: r.mass, area: r.area, ms: performance.now() - t0 });
+  }, 30);
+}
+function requestEig(shape, delay = 250) {
+  clearTimeout(shape.timer);
+  shape.timer = setTimeout(() => launchEig(shape), delay);
+}
+function launchEig(shape) {
+  if (shape.busy) { shape.pending = true; return; }
+  shape.busy = true; shape.reqId++;
+  $('busy' + shape.name).hidden = false;
+  if (useWorker && shape.worker) {
+    const pos = Float64Array.from(shape.pos);
+    shape.worker.postMessage({ id: shape.reqId, pos, faces: Uint32Array.from(base.faces), kmax: KMAX }, [pos.buffer]);
+  } else runMainThread(shape);
+}
+function onEigResult(shape, r) {
+  if (r.id !== shape.reqId) return;
+  shape.busy = false;
+  shape.eig = { evals: r.evals, evecs: r.evecs, mass: r.mass, area: r.area, n: base.n };
+  shape.computeMs = r.ms; shape.wks = null;
+  $('busy' + shape.name).hidden = true;
+  if (shape.pending) { shape.pending = false; launchEig(shape); }
+  recomputeMap();
+  setStatus(`${base.n} vertices · eigen-decomposition A ${shapes[0].computeMs | 0} ms, B ${shapes[1].computeMs | 0} ms · ${useWorker ? 'web workers' : 'main thread'}`);
+}
+
+/* ------------------------------------------------------------- base mesh */
+function rebuildBase() {
+  const kind = $('baseKind').value, res = $('resolution').value;
+  let m;
+  const f = { low: 8, med: 10, high: 12 }[res];
+  if (kind === 'sphere') m = MeshGen.icosphere(f);
+  else if (kind === 'blob') m = MeshGen.blob(f);
+  else if (kind === 'cat') m = MeshGen.cat({ low: 0.105, med: 0.085, high: 0.075 }[res]);
+  else m = MeshGen.torus(...{ low: [36, 18], med: [44, 22], high: [54, 27] }[res]);
+  base = { pos: m.pos, faces: m.faces, n: m.n };
+  base.normals = MeshGen.vertexNormals(m.pos, m.faces, m.n);
+  base.fps = MeshGen.farthestPoints(m.pos, m.n, 24);
+  base.bumpCenters = Array.from(base.fps.slice(20, 24));
+  base.landmarks = Array.from(base.fps);
+  // default bump point: the base vertex facing the camera in the initial view
+  { let best = -Infinity, bi = 0; for (let v = 0; v < m.n; v++) { const d = 0.5 * m.pos[3 * v] + 0.32 * m.pos[3 * v + 1] + 0.81 * m.pos[3 * v + 2]; if (d > best) { best = d; bi = v; } } ui.srcVertex = bi; }
+  for (const s of shapes) {
+    s.sculpt = new Float32Array(3 * m.n); s.posNoSculpt = new Float32Array(3 * m.n); s.pos = new Float32Array(3 * m.n);
+    s.eig = null; s.wks = null;
+    applyDeform(s);
+  }
+  map.C = map.Cgt = map.Cest = map.T = null; map.hover = map.locked = null;
+  for (const vp of viewports) vp.rebuildGeometry();
+  shapes.forEach(s => requestEig(s, 10));
+  updateColors();
+}
+
+/* ------------------------------------------------------------- viewports */
+const viewports = [];
+function makeViewport(shape, canvas) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+  camera.position.set(0, 0, 4.8);
+  scene.add(camera);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x556070, 0.75));
+  const key = new THREE.DirectionalLight(0xffffff, 0.75); key.position.set(1.5, 2, 2.5); camera.add(key);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.2); fill.position.set(-2, -1, 1); camera.add(fill);
+  const group = new THREE.Group(); group.rotation.set(0.32, -0.55, 0); scene.add(group);
+  const material = new THREE.MeshPhongMaterial({ vertexColors: true, shininess: 18, specular: 0x222222, side: THREE.DoubleSide });
+  const wireMat = new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true, transparent: true, opacity: 0.14 });
+  const markers = new THREE.Group(); group.add(markers);
+  const vp = { shape, canvas, renderer, scene, camera, group, material, wireMat, markers, mesh: null, wire: null, geometry: null };
+
+  vp.rebuildGeometry = () => {
+    if (vp.mesh) { group.remove(vp.mesh); group.remove(vp.wire); vp.geometry.dispose(); }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(shape.pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(3 * base.n), 3));
+    g.setIndex(new THREE.BufferAttribute(base.faces, 1));
+    vp.geometry = g;
+    vp.mesh = new THREE.Mesh(g, material); vp.wire = new THREE.Mesh(g, wireMat);
+    vp.wire.visible = ui.wireframe;
+    group.add(vp.mesh); group.add(vp.wire);
+    vp.refreshPositions();
+  };
+  vp.refreshPositions = () => {
+    vp.geometry.attributes.position.needsUpdate = true;
+    vp.geometry.computeVertexNormals();
+    vp.geometry.computeBoundingSphere();
+    vp.updateMarkers();
+  };
+  vp.setColors = (rgb) => { vp.geometry.attributes.color.array.set(rgb); vp.geometry.attributes.color.needsUpdate = true; };
+  vp.markerList = [];
+  vp.updateMarkers = () => {
+    const wanted = [];
+    if (ui.viz === 'transfer') wanted.push({ v: ui.srcVertex, color: 0x1a9c5a, r: 0.045 });
+    if (ui.mapMode === 'est') for (let i = 0; i < ui.nLandmarks; i++) wanted.push({ v: base.landmarks[i], color: 0xe8b400, r: 0.032 });
+    while (vp.markerList.length < wanted.length) {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 8), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+      markers.add(m); vp.markerList.push(m);
+    }
+    vp.markerList.forEach((m, i) => {
+      const w = wanted[i];
+      m.visible = !!w;
+      if (w) { m.position.set(shape.pos[3 * w.v], shape.pos[3 * w.v + 1], shape.pos[3 * w.v + 2]); m.scale.setScalar(w.r); m.material.color.setHex(w.color); }
+    });
+  };
+  vp.resize = () => {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (w === 0 || h === 0) return;
+    if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) {
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    }
+  };
+  vp.render = () => { vp.resize(); renderer.render(scene, camera); };
+
+  // interaction ------------------------------------------------------------
+  const raycaster = new THREE.Raycaster();
+  let drag = null;
+  const ndc = (e) => { const r = canvas.getBoundingClientRect(); return new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); };
+  const pick = (e) => { raycaster.setFromCamera(ndc(e), camera); const h = raycaster.intersectObject(vp.mesh, false); return h.length ? h[0] : null; };
+  const nearestVertex = (hit) => {
+    const f = hit.face, ids = [f.a, f.b, f.c];
+    const local = vp.mesh.worldToLocal(hit.point.clone());
+    let best = ids[0], bd = Infinity;
+    for (const v of ids) { const d = Math.hypot(shape.pos[3 * v] - local.x, shape.pos[3 * v + 1] - local.y, shape.pos[3 * v + 2] - local.z); if (d < bd) { bd = d; best = v; } }
+    return best;
+  };
+  canvas.addEventListener('pointerdown', (e) => {
+    try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* synthetic events */ }
+    const sculpt = ui.tool === 'sculpt' || e.shiftKey;
+    drag = { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, moved: false, sculpt: null, move: null };
+    if (!sculpt && ui.tool === 'move') {
+      const hit = pick(e);
+      const anchor = hit ? hit.point.clone() : group.localToWorld(new THREE.Vector3(shape.pose.tx, shape.pose.ty, shape.pose.tz));
+      const camDir = new THREE.Vector3(); camera.getWorldDirection(camDir);
+      raycaster.setFromCamera(ndc(e), camera);
+      const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(camDir, anchor), P0 = new THREE.Vector3();
+      raycaster.ray.intersectPlane(plane, P0);
+      drag.move = { plane, last: P0, rotate: e.altKey || e.button === 2 };
+    }
+    if (sculpt) {
+      const hit = pick(e);
+      if (hit) {
+        const local = vp.mesh.worldToLocal(hit.point.clone());
+        const camDir = new THREE.Vector3(); camera.getWorldDirection(camDir);
+        const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(camDir, hit.point.clone());
+        const weights = new Float32Array(base.n), s2 = 2 * ui.brush * ui.brush;
+        for (let v = 0; v < base.n; v++) {
+          const dx = shape.pos[3 * v] - local.x, dy = shape.pos[3 * v + 1] - local.y, dz = shape.pos[3 * v + 2] - local.z;
+          weights[v] = Math.exp(-(dx * dx + dy * dy + dz * dz) / s2);
+        }
+        drag.sculpt = { plane, start: hit.point.clone(), weights, snap: Float32Array.from(shape.sculpt) };
+      }
+    }
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    drag.x = e.clientX; drag.y = e.clientY;
+    if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) > 3) drag.moved = true;
+    if (drag.sculpt) {
+      raycaster.setFromCamera(ndc(e), camera);
+      const P = new THREE.Vector3();
+      if (!raycaster.ray.intersectPlane(drag.sculpt.plane, P)) return;
+      const delta = P.sub(drag.sculpt.start).applyQuaternion(group.quaternion.clone().invert()).applyQuaternion(poseQuaternion(shape.pose).invert());
+      const { weights, snap } = drag.sculpt, s = shape.sculpt;
+      for (let v = 0; v < base.n; v++) { const w = weights[v]; s[3 * v] = snap[3 * v] + w * delta.x; s[3 * v + 1] = snap[3 * v + 1] + w * delta.y; s[3 * v + 2] = snap[3 * v + 2] + w * delta.z; }
+      composePositions(shape); vp.refreshPositions();
+      if (ui.viz === 'transfer' && shape.idx === 0) updateColors();
+    } else if (drag.move) {
+      const gInv = group.quaternion.clone().invert();
+      if (drag.move.rotate) {
+        // rotate about the screen axes, around the shape's own origin
+        const axX = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion).applyQuaternion(gInv);
+        const axY = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion).applyQuaternion(gInv);
+        const q = new THREE.Quaternion().setFromAxisAngle(axY, dx * 0.01).multiply(new THREE.Quaternion().setFromAxisAngle(axX, dy * 0.01));
+        setPoseFromQuaternion(shape, q.multiply(poseQuaternion(shape.pose)));
+      } else {
+        raycaster.setFromCamera(ndc(e), camera);
+        const P = new THREE.Vector3();
+        if (!raycaster.ray.intersectPlane(drag.move.plane, P)) return;
+        const delta = P.clone().sub(drag.move.last).applyQuaternion(gInv);
+        drag.move.last = P;
+        shape.pose.tx += delta.x; shape.pose.ty += delta.y; shape.pose.tz += delta.z;
+      }
+      syncPosePanel(shape); composePositions(shape); vp.refreshPositions();
+      if (ui.viz === 'transfer' && shape.idx === 0) updateColors();
+    } else {
+      const apply = (g) => { g.rotation.y += dx * 0.01; g.rotation.x = clamp(g.rotation.x + dy * 0.01, -1.5, 1.5); };
+      apply(group); if (ui.linkViews) for (const o of viewports) if (o !== vp) apply(o.group);
+    }
+  });
+  const endDrag = (e) => {
+    if (!drag) return;
+    if (drag.sculpt) { if (drag.moved) requestEig(shape, 150); }
+    else if (drag.move) { /* rigid motion: nothing to recompute */ }
+    else if (!drag.moved && shape.idx === 0 && ui.viz === 'transfer' && ui.funcType === 'bump') {
+      const hit = pick(e);
+      if (hit) { ui.srcVertex = nearestVertex(hit); viewports.forEach(v => v.updateMarkers()); updateColors(); }
+    }
+    drag = null;
+  };
+  canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', endDrag);
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const apply = (c) => { c.position.z = clamp(c.position.z * (1 + e.deltaY * 0.0012), 2.2, 12); };
+    apply(camera); if (ui.linkViews) for (const o of viewports) if (o !== vp) apply(o.camera);
+  }, { passive: false });
+  return vp;
+}
+
+/* ------------------------------------------------------ functional maps */
+function wksDescriptors(eig, n, N = 30) {
+  const { evals, evecs } = eig, K = evals.length;
+  const logs = new Float64Array(K);
+  let first = 1; while (first < K && evals[first] < 1e-8) first++;
+  for (let j = 0; j < K; j++) logs[j] = Math.log(Math.max(evals[j], 1e-8));
+  const emin = logs[first], emax = logs[K - 1];
+  const step = (emax - emin) / (N - 1), sigma = 7 * step;
+  const F = new Float64Array(n * N);
+  const w = new Float64Array(K);
+  for (let i = 0; i < N; i++) {
+    const e = emin + i * step;
+    let norm = 0;
+    for (let j = first; j < K; j++) { w[j] = Math.exp(-(e - logs[j]) * (e - logs[j]) / (2 * sigma * sigma)); norm += w[j]; }
+    for (let j = first; j < K; j++) {
+      const c = w[j] / norm, off = j * n;
+      for (let v = 0; v < n; v++) { const p = evecs[off + v]; F[v * N + i] += c * p * p; }
+    }
+  }
+  return { F, d: N };
+}
+function projectCoeffs(evecs, mass, n, k, F, d) {   // A = Φ^T M F  (k×d)
+  const A = new Float64Array(k * d);
+  for (let j = 0; j < k; j++) {
+    const off = j * n;
+    for (let v = 0; v < n; v++) {
+      const w = evecs[off + v] * mass[v];
+      if (w === 0) continue;
+      const fo = v * d, ao = j * d;
+      for (let c = 0; c < d; c++) A[ao + c] += w * F[fo + c];
+    }
+  }
+  return A;
+}
+function groundTruthC(ev1, ev2, mass2, n, k) {   // C = Φ_B^T M_B Φ_A  (identity correspondence)
+  const C = new Float64Array(k * k), w = new Float64Array(n);
+  for (let i = 0; i < k; i++) {
+    for (let v = 0; v < n; v++) w[v] = ev2[i * n + v] * mass2[v];
+    for (let j = 0; j < k; j++) { let s = 0; const off = j * n; for (let v = 0; v < n; v++) s += w[v] * ev1[off + v]; C[i * k + j] = s; }
+  }
+  return C;
+}
+function choleskySolve(M, rhs, k) {   // M symmetric positive definite (k×k), solves in place
+  const L = Float64Array.from(M);
+  for (let j = 0; j < k; j++) {
+    let s = L[j * k + j];
+    for (let p = 0; p < j; p++) s -= L[j * k + p] * L[j * k + p];
+    const d = Math.sqrt(Math.max(s, 1e-14)); L[j * k + j] = d;
+    for (let i = j + 1; i < k; i++) { let t = L[i * k + j]; for (let p = 0; p < j; p++) t -= L[i * k + p] * L[j * k + p]; L[i * k + j] = t / d; }
+  }
+  const x = Float64Array.from(rhs);
+  for (let i = 0; i < k; i++) { let s = x[i]; for (let p = 0; p < i; p++) s -= L[i * k + p] * x[p]; x[i] = s / L[i * k + i]; }
+  for (let i = k - 1; i >= 0; i--) { let s = x[i]; for (let p = i + 1; p < k; p++) s -= L[p * k + i] * x[p]; x[i] = s / L[i * k + i]; }
+  return x;
+}
+/* Ovsjanikov et al. 2012: min_C ||C A - B||² + mu ||C Λ_A - Λ_B C||², solved row by row. */
+function estimateC(A, B, d, lam1, lam2, k, mu) {
+  const AAt = new Float64Array(k * k), BAt = new Float64Array(k * k);
+  for (let i = 0; i < k; i++) for (let j = 0; j < k; j++) {
+    let s = 0, t = 0;
+    for (let c = 0; c < d; c++) { s += A[i * d + c] * A[j * d + c]; t += B[i * d + c] * A[j * d + c]; }
+    AAt[i * k + j] = s; BAt[i * k + j] = t;
+  }
+  let tr = 0; for (let i = 0; i < k; i++) tr += AAt[i * k + i];
+  const ridge = 1e-8 * Math.max(tr / k, 1e-12);
+  const lscale = Math.max(lam1[k - 1], lam2[k - 1], 1e-9);
+  const C = new Float64Array(k * k), M = new Float64Array(k * k), rhs = new Float64Array(k);
+  for (let i = 0; i < k; i++) {
+    M.set(AAt);
+    for (let j = 0; j < k; j++) { const dl = (lam1[j] - lam2[i]) / lscale; M[j * k + j] += mu * dl * dl + ridge; rhs[j] = BAt[i * k + j]; }
+    C.set(choleskySolve(M, rhs, k), i * k);
+  }
+  return C;
+}
+/* Point-to-point map from C: for each vertex y of B find x of A minimising ||C φ_A(x) - φ_B(y)||. */
+function p2pFromC(C, k, ev1, ev2, n) {
+  const P1 = new Float64Array(n * k), P2 = new Float64Array(n * k);
+  for (let x = 0; x < n; x++) for (let i = 0; i < k; i++) {
+    let s = 0; for (let j = 0; j < k; j++) s += C[i * k + j] * ev1[j * n + x];
+    P1[x * k + i] = s; P2[x * k + i] = ev2[i * n + x];
+  }
+  const T = new Int32Array(n);
+  for (let y = 0; y < n; y++) {
+    const yo = y * k; let best = Infinity, bx = 0;
+    for (let x = 0; x < n; x++) {
+      const xo = x * k; let s = 0;
+      for (let i = 0; i < k; i++) { const dd = P1[xo + i] - P2[yo + i]; s += dd * dd; if (s > best) break; }
+      if (s < best) { best = s; bx = x; }
+    }
+    T[y] = bx;
+  }
+  return T;
+}
+/* One-sided Jacobi SVD of a k×k matrix; returns U V^T (nearest orthogonal matrix). */
+function nearestOrthogonal(G, k) {
+  const U = Float64Array.from(G), V = new Float64Array(k * k);
+  for (let i = 0; i < k; i++) V[i * k + i] = 1;
+  for (let sweep = 0; sweep < 30; sweep++) {
+    let rotated = false;
+    for (let p = 0; p < k - 1; p++) for (let q = p + 1; q < k; q++) {
+      let al = 0, be = 0, ga = 0;
+      for (let r = 0; r < k; r++) { const up = U[r * k + p], uq = U[r * k + q]; al += up * up; be += uq * uq; ga += up * uq; }
+      if (Math.abs(ga) <= 1e-13 * Math.sqrt(al * be)) continue;
+      rotated = true;
+      const zeta = (be - al) / (2 * ga), t = Math.sign(zeta || 1) / (Math.abs(zeta) + Math.sqrt(1 + zeta * zeta));
+      const c = 1 / Math.sqrt(1 + t * t), s = c * t;
+      for (let r = 0; r < k; r++) {
+        const up = U[r * k + p], uq = U[r * k + q]; U[r * k + p] = c * up - s * uq; U[r * k + q] = s * up + c * uq;
+        const vp = V[r * k + p], vq = V[r * k + q]; V[r * k + p] = c * vp - s * vq; V[r * k + q] = s * vp + c * vq;
+      }
+    }
+    if (!rotated) break;
+  }
+  const out = new Float64Array(k * k);
+  for (let p = 0; p < k; p++) {
+    let s = 0; for (let r = 0; r < k; r++) s += U[r * k + p] * U[r * k + p];
+    s = Math.sqrt(s) || 1;
+    for (let r = 0; r < k; r++) U[r * k + p] /= s;
+  }
+  for (let i = 0; i < k; i++) for (let j = 0; j < k; j++) { let s = 0; for (let p = 0; p < k; p++) s += U[i * k + p] * V[j * k + p]; out[i * k + j] = s; }
+  return out;
+}
+function icpRefine(C, k, ev1, ev2, n, iters) {
+  for (let it = 0; it < iters; it++) {
+    const T = p2pFromC(C, k, ev1, ev2, n);
+    const G = new Float64Array(k * k);
+    for (let y = 0; y < n; y++) { const x = T[y]; for (let i = 0; i < k; i++) { const a = ev2[i * n + y]; if (a === 0) continue; for (let j = 0; j < k; j++) G[i * k + j] += a * ev1[j * n + x]; } }
+    C = nearestOrthogonal(G, k);
+  }
+  return C;
+}
+
+function recomputeMap() {
+  const e1 = shapes[0].eig, e2 = shapes[1].eig;
+  if (!e1 || !e2 || e1.n !== base.n || e2.n !== base.n) return;
+  const n = base.n, k = ui.k, ev1 = e1.evecs;
+  let ev2 = e2.evecs;
+  if (ui.alignSigns) {
+    ev2 = Float64Array.from(e2.evecs);
+    for (let i = 0; i < KMAX; i++) {
+      let s = 0; for (let v = 0; v < n; v++) s += ev2[i * n + v] * e2.mass[v] * ev1[i * n + v];
+      if (s < 0) for (let v = 0; v < n; v++) ev2[i * n + v] = -ev2[i * n + v];
+    }
+  }
+  map.ev2 = ev2;
+  map.Cgt = groundTruthC(ev1, ev2, e2.mass, n, k);
+  if (ui.mapMode === 'est') {
+    for (const [s, ev] of [[shapes[0], ev1], [shapes[1], ev2]]) {
+      if (!s.wks || s.wksKey !== s.eig || s.wksSigned !== ui.alignSigns) { s.wks = wksDescriptors({ evals: s.eig.evals, evecs: ev }, n); s.wksKey = s.eig; s.wksSigned = ui.alignSigns; }
+    }
+    const dW = shapes[0].wks.d, nl = ui.nLandmarks;
+    const SCALES = [0.5, 1, 2, 4], nS = SCALES.length, d = dW + nl * nS;
+    const A0 = projectCoeffs(ev1, e1.mass, n, k, shapes[0].wks.F, dW);
+    const B0 = projectCoeffs(ev2, e2.mass, n, k, shapes[1].wks.F, dW);
+    const A = new Float64Array(k * d), B = new Float64Array(k * d);
+    const lk = Math.max(e1.evals[k - 1], e2.evals[k - 1], 1e-6);
+    for (let j = 0; j < k; j++) {
+      A.set(A0.subarray(j * dW, (j + 1) * dW), j * d); B.set(B0.subarray(j * dW, (j + 1) * dW), j * d);
+      for (let l = 0; l < nl; l++) {
+        const p = base.landmarks[l];
+        for (let sI = 0; sI < nS; sI++) {
+          const t = SCALES[sI] / lk, c = dW + l * nS + sI;
+          A[j * d + c] = Math.exp(-t * e1.evals[j]) * ev1[j * n + p];   // heat kernel k_t(p, ·) in the basis
+          B[j * d + c] = Math.exp(-t * e2.evals[j]) * ev2[j * n + p];
+        }
+      }
+    }
+    for (let c = 0; c < d; c++) {
+      let s = 0; for (let j = 0; j < k; j++) s += A[j * d + c] * A[j * d + c] + B[j * d + c] * B[j * d + c];
+      s = Math.sqrt(s / 2) || 1;
+      const w = (c >= dW ? 1.5 : 1.0) / s;
+      for (let j = 0; j < k; j++) { A[j * d + c] *= w; B[j * d + c] *= w; }
+    }
+    let C = estimateC(A, B, d, e1.evals, e2.evals, k, ui.mu);
+    if (ui.icp) C = icpRefine(C, k, ev1, ev2, n, 5);
+    map.Cest = C;
+  } else map.Cest = null;
+  map.C = ui.mapMode === 'est' ? map.Cest : map.Cgt;
+  map.T = p2pFromC(map.C, k, ev1, ev2, n);
+  map.stats = computeStats(map.C, k, e1, e2);
+  if (map.locked && (map.locked.i >= k || map.locked.j >= k)) map.locked = null;
+  drawHeatmap(); drawEigChart(); renderStats(); updateColors();
+}
+
+function computeStats(C, k, e1, e2) {
+  let orth = 0, total = 0, off = 0;
+  for (let i = 0; i < k; i++) for (let j = 0; j < k; j++) {
+    let s = 0; for (let p = 0; p < k; p++) s += C[p * k + i] * C[p * k + j];
+    orth += (s - (i === j ? 1 : 0)) ** 2;
+    const c2 = C[i * k + j] ** 2; total += c2; if (i !== j) off += c2;
+  }
+  const lscale = Math.max(e1.evals[k - 1], e2.evals[k - 1], 1e-9);
+  let comm = 0;
+  for (let i = 0; i < k; i++) for (let j = 0; j < k; j++) comm += (C[i * k + j] * (e1.evals[j] - e2.evals[i]) / lscale) ** 2;
+  const pos = shapes[0].pos, n = base.n;
+  let mn = [Infinity, Infinity, Infinity], mx = [-Infinity, -Infinity, -Infinity];
+  for (let v = 0; v < n; v++) for (let c = 0; c < 3; c++) { mn[c] = Math.min(mn[c], pos[3 * v + c]); mx[c] = Math.max(mx[c], pos[3 * v + c]); }
+  const diam = Math.hypot(mx[0] - mn[0], mx[1] - mn[1], mx[2] - mn[2]) || 1;
+  const err = new Float32Array(n); let mean = 0, acc = 0;
+  for (let y = 0; y < n; y++) {
+    const x = map.T[y];
+    err[y] = Math.hypot(pos[3 * x] - pos[3 * y], pos[3 * x + 1] - pos[3 * y + 1], pos[3 * x + 2] - pos[3 * y + 2]) / diam;
+    mean += err[y]; if (err[y] < 0.05) acc++;
+  }
+  let rel = null;
+  if (map.Cest) { let a = 0, b = 0; for (let i = 0; i < k * k; i++) { a += (map.Cest[i] - map.Cgt[i]) ** 2; b += map.Cgt[i] ** 2; } rel = Math.sqrt(a / Math.max(b, 1e-12)); }
+  return { orth: Math.sqrt(orth / k), offdiag: off / Math.max(total, 1e-12), comm: Math.sqrt(comm / Math.max(total, 1e-12)), p2pMean: mean / n, p2pAcc: acc / n, err, rel };
+}
+
+/* ------------------------------------------------------------ colouring */
+function colorsFromValues(vals, n, vmax) {
+  const rgb = new Float32Array(3 * n), s = vmax > 0 ? 1 / vmax : 1;
+  for (let v = 0; v < n; v++) { const c = diverging(vals[v] * s); rgb[3 * v] = c[0]; rgb[3 * v + 1] = c[1]; rgb[3 * v + 2] = c[2]; }
+  return rgb;
+}
+function maxAbs(vals) { let m = 0; for (let i = 0; i < vals.length; i++) m = Math.max(m, Math.abs(vals[i])); return m; }
+function sourceFunction() {
+  const n = base.n, pos = shapes[0].pos, f = new Float64Array(n);
+  switch (ui.funcType) {
+    case 'bump': { const p = ui.srcVertex; for (let v = 0; v < n; v++) { const d2 = (pos[3 * v] - pos[3 * p]) ** 2 + (pos[3 * v + 1] - pos[3 * p + 1]) ** 2 + (pos[3 * v + 2] - pos[3 * p + 2]) ** 2; f[v] = Math.exp(-d2 / (2 * 0.3 * 0.3)); } break; }
+    case 'x': for (let v = 0; v < n; v++) f[v] = pos[3 * v]; break;
+    case 'y': for (let v = 0; v < n; v++) f[v] = pos[3 * v + 1]; break;
+    case 'z': for (let v = 0; v < n; v++) f[v] = pos[3 * v + 2]; break;
+    case 'stripes': for (let v = 0; v < n; v++) f[v] = Math.sin(6 * base.pos[3 * v + 1]); break;
+    case 'step': for (let v = 0; v < n; v++) f[v] = base.pos[3 * v] > 0 ? 1 : -1; break;
+  }
+  return f;
+}
+function flat(n, rgb) { const out = new Float32Array(3 * n); for (let v = 0; v < n; v++) { out[3 * v] = rgb[0]; out[3 * v + 1] = rgb[1]; out[3 * v + 2] = rgb[2]; } return out; }
+function updateColors() {
+  if (!base) return;
+  const n = base.n, e1 = shapes[0].eig, e2 = shapes[1].eig;
+  const ready = e1 && e2 && map.C;
+  const [vpA, vpB] = viewports;
+  const legend = $('colorLegend');
+  if (!ready) {
+    vpA.setColors(flat(n, hexRGB('#9fb7d6'))); vpB.setColors(flat(n, hexRGB('#f0b59a')));
+    $('vizCaption').textContent = 'Computing the Laplace–Beltrami eigenbases…';
+    return;
+  }
+  const k = ui.k, ev1 = e1.evecs, ev2 = map.ev2;
+  if (ui.viz === 'eig') {
+    const sel = map.hover || map.locked;
+    const i = sel ? sel.i : clamp(ui.eigIndex - 1, 0, k - 1), j = sel ? sel.j : clamp(ui.eigIndex - 1, 0, k - 1);
+    const a = ev1.subarray(j * n, (j + 1) * n), b = ev2.subarray(i * n, (i + 1) * n);
+    const vmax = Math.max(maxAbs(a), maxAbs(b));
+    vpA.setColors(colorsFromValues(a, n, vmax)); vpB.setColors(colorsFromValues(b, n, vmax));
+    const cij = map.C[i * k + j];
+    $('vizCaption').innerHTML = `A shows <b>φ<sub>${j + 1}</sub></b> (λ = ${fmt(e1.evals[j])}) · B shows <b>φ<sub>${i + 1}</sub></b> (λ = ${fmt(e2.evals[i])}) · C[${i + 1}, ${j + 1}] = ${cij.toFixed(3)}`;
+    legend.dataset.kind = 'div';
+  } else if (ui.viz === 'transfer') {
+    const f = sourceFunction();
+    const a = new Float64Array(k), b = new Float64Array(k);
+    for (let j = 0; j < k; j++) { let s = 0; for (let v = 0; v < n; v++) s += ev1[j * n + v] * e1.mass[v] * f[v]; a[j] = s; }
+    for (let i = 0; i < k; i++) { let s = 0; for (let j = 0; j < k; j++) s += map.C[i * k + j] * a[j]; b[i] = s; }
+    const g = new Float64Array(n), fp = new Float64Array(n);
+    for (let v = 0; v < n; v++) { let s = 0, t = 0; for (let i = 0; i < k; i++) { s += ev2[i * n + v] * b[i]; t += ev1[i * n + v] * a[i]; } g[v] = s; fp[v] = t; }
+    const vmax = maxAbs(f);
+    vpA.setColors(colorsFromValues(ui.showProjected ? fp : f, n, vmax)); vpB.setColors(colorsFromValues(g, n, vmax));
+    $('vizCaption').innerHTML = `A shows ${ui.showProjected ? 'the projection Φ<sub>A</sub>Φ<sub>A</sub><sup>T</sup>M<sub>A</sub> f' : 'the function f'} · B shows the transferred function Φ<sub>B</sub> C Φ<sub>A</sub><sup>T</sup> M<sub>A</sub> f` + (ui.funcType === 'bump' ? ' · click on A to move the bump' : '');
+    legend.dataset.kind = 'div';
+  } else {
+    const pos = base.pos, rgbA = new Float32Array(3 * n);
+    for (let v = 0; v < n; v++) for (let c = 0; c < 3; c++) rgbA[3 * v + c] = 0.15 + 0.85 * clamp(0.5 + 0.45 * pos[3 * v + c], 0, 1);
+    vpA.setColors(rgbA);
+    if (ui.p2pDisplay === 'colors') {
+      const rgbB = new Float32Array(3 * n);
+      for (let y = 0; y < n; y++) { const x = map.T[y]; rgbB[3 * y] = rgbA[3 * x]; rgbB[3 * y + 1] = rgbA[3 * x + 1]; rgbB[3 * y + 2] = rgbA[3 * x + 2]; }
+      vpB.setColors(rgbB);
+      $('vizCaption').innerHTML = 'B is painted with the colour of its matched point on A (nearest neighbour between C φ<sub>A</sub>(x) and φ<sub>B</sub>(y)). A clean map reproduces A\'s colour field exactly.';
+      legend.dataset.kind = 'none';
+    } else {
+      const err = map.stats.err, rgbB = new Float32Array(3 * n);
+      for (let y = 0; y < n; y++) { const c = sequential(clamp(err[y] / 0.25, 0, 1)); rgbB[3 * y] = c[0]; rgbB[3 * y + 1] = c[1]; rgbB[3 * y + 2] = c[2]; }
+      vpB.setColors(rgbB);
+      $('vizCaption').innerHTML = 'B shows the correspondence error of the recovered map, as a fraction of the diameter of A (light 0 → dark 25 %).';
+      legend.dataset.kind = 'seq';
+    }
+  }
+}
+const fmt = (x) => Math.abs(x) >= 100 ? x.toFixed(0) : Math.abs(x) >= 10 ? x.toFixed(1) : x.toFixed(2);
+
+/* ---------------------------------------------------------- 2D panels */
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function setupCanvas(cv) {
+  const dpr = Math.min(devicePixelRatio, 2), w = cv.clientWidth, h = cv.clientHeight;
+  if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h };
+}
+function drawHeatmap() {
+  const cv = $('cmap'), { ctx, w, h } = setupCanvas(cv);
+  ctx.clearRect(0, 0, w, h);
+  if (!map.C) return;
+  const k = ui.k, cell = Math.min(w, h) / k;
+  for (let i = 0; i < k; i++) for (let j = 0; j < k; j++) {
+    ctx.fillStyle = cssRGB(diverging(map.C[i * k + j]));
+    ctx.fillRect(j * cell, i * cell, Math.ceil(cell), Math.ceil(cell));
+  }
+  if (k <= 40) {
+    ctx.strokeStyle = css('--grid'); ctx.lineWidth = 1;
+    for (let i = 0; i <= k; i++) { ctx.beginPath(); ctx.moveTo(i * cell, 0); ctx.lineTo(i * cell, k * cell); ctx.moveTo(0, i * cell); ctx.lineTo(k * cell, i * cell); ctx.stroke(); }
+  }
+  const sel = map.hover || map.locked;
+  if (sel) {
+    ctx.strokeStyle = css('--ink'); ctx.lineWidth = 2;
+    ctx.strokeRect(sel.j * cell + 1, sel.i * cell + 1, cell - 2, cell - 2);
+  }
+}
+function drawEigChart() {
+  const cv = $('eigchart'), { ctx, w, h } = setupCanvas(cv);
+  ctx.clearRect(0, 0, w, h);
+  const e1 = shapes[0].eig, e2 = shapes[1].eig;
+  if (!e1 || !e2) return;
+  const padL = 44, padR = 10, padT = 10, padB = 24;
+  const K = KMAX, ymax = Math.max(e1.evals[K - 1], e2.evals[K - 1]) * 1.05;
+  const X = (i) => padL + (i / (K - 1)) * (w - padL - padR), Y = (v) => padT + (1 - v / ymax) * (h - padT - padB);
+  ctx.font = '11px "IBM Plex Mono", ui-monospace, monospace';
+  ctx.fillStyle = css('--muted'); ctx.strokeStyle = css('--grid'); ctx.lineWidth = 1;
+  const ticks = 4;
+  for (let t = 0; t <= ticks; t++) {
+    const v = ymax * t / ticks, y = Y(v);
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(w - padR, y); ctx.stroke();
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText(v.toFixed(0), padL - 6, y);
+  }
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (const i of [1, 25, 50, 75, 100]) ctx.fillText(String(i), X(i - 1), h - padB + 6);
+  // k marker
+  ctx.setLineDash([4, 3]); ctx.strokeStyle = css('--muted'); ctx.beginPath(); ctx.moveTo(X(ui.k - 1), padT); ctx.lineTo(X(ui.k - 1), h - padB); ctx.stroke(); ctx.setLineDash([]);
+  ctx.textAlign = 'left'; ctx.fillStyle = css('--ink'); ctx.fillText('k = ' + ui.k, Math.min(X(ui.k - 1) + 5, w - 60), padT);
+  const series = [[e1.evals, css('--series-a')], [e2.evals, css('--series-b')]];
+  for (const [ev, col] of series) {
+    ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.beginPath();
+    for (let i = 0; i < K; i++) { const x = X(i), y = Y(ev[i]); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+    ctx.stroke();
+  }
+}
+function renderStats() {
+  const s = map.stats; if (!s) return;
+  const rows = [
+    ['Orthogonality ‖CᵀC − I‖ / √k', s.orth.toFixed(3), 'isometry → 0'],
+    ['Off-diagonal energy', (100 * s.offdiag).toFixed(1) + ' %', 'isometry → 0'],
+    ['Laplacian commutativity ‖CΛ_A − Λ_B C‖ (rel.)', s.comm.toFixed(3), 'isometry → 0'],
+    ['Point-to-point error (mean, % diameter)', (100 * s.p2pMean).toFixed(2) + ' %', ''],
+    ['Vertices matched within 5 % of diameter', (100 * s.p2pAcc).toFixed(1) + ' %', ''],
+  ];
+  if (s.rel !== null) rows.push(['‖C_est − C_gt‖ / ‖C_gt‖', s.rel.toFixed(3), 'perfect estimate → 0']);
+  $('stats').innerHTML = rows.map(r => `<tr><th>${r[0]}</th><td>${r[1]}</td><td class="hint">${r[2]}</td></tr>`).join('');
+}
+function setStatus(t) { $('status').textContent = t; }
+
+/* --------------------------------------------------------------- UI wiring */
+function buildParamPanel(shape) {
+  const host = $('params' + shape.name);
+  host.innerHTML = '';
+  for (const p of PARAM_DEFS) {
+    const row = document.createElement('label'); row.className = 'slider';
+    row.innerHTML = `<span>${p.label}</span><input type="range" id="p${shape.name}_${p.key}" min="${p.min}" max="${p.max}" step="${p.step}" value="${shape.params[p.key]}"><output>${shape.params[p.key]}</output>`;
+    const input = row.querySelector('input'), out = row.querySelector('output');
+    input.addEventListener('input', () => {
+      shape.params[p.key] = parseFloat(input.value); out.value = input.value;
+      applyDeform(shape); viewports[shape.idx].refreshPositions(); requestEig(shape);
+      if (ui.viz === 'transfer' && shape.idx === 0) updateColors();
+    });
+    host.appendChild(row);
+  }
+}
+function buildPosePanel(shape) {
+  const host = $('pose' + shape.name);
+  host.innerHTML = '';
+  for (const p of POSE_DEFS) {
+    const row = document.createElement('label'); row.className = 'slider';
+    row.innerHTML = `<span>${p.label}</span><input type="range" id="q${shape.name}_${p.key}" min="${p.min}" max="${p.max}" step="${p.step}" value="${shape.pose[p.key]}"><output>${shape.pose[p.key]}</output>`;
+    const input = row.querySelector('input'), out = row.querySelector('output');
+    input.addEventListener('input', () => {
+      shape.pose[p.key] = parseFloat(input.value); out.value = input.value;
+      composePositions(shape); viewports[shape.idx].refreshPositions();
+      if (ui.viz === 'transfer' && shape.idx === 0) updateColors();
+    });
+    host.appendChild(row);
+  }
+}
+function syncPosePanel(shape) {
+  for (const p of POSE_DEFS) { const el = $(`q${shape.name}_${p.key}`); const v = shape.pose[p.key]; el.value = v; el.nextElementSibling.value = p.step >= 1 ? Math.round(v) : v.toFixed(2); }
+}
+function syncParamPanel(shape) {
+  for (const p of PARAM_DEFS) { const el = $(`p${shape.name}_${p.key}`); el.value = shape.params[p.key]; el.nextElementSibling.value = shape.params[p.key]; }
+}
+function setParams(shape, params) {
+  shape.params = params; syncParamPanel(shape);
+  applyDeform(shape); viewports[shape.idx].refreshPositions(); requestEig(shape, 50);
+}
+function randomParams() {
+  const r = (a, b) => a + Math.random() * (b - a);
+  return { sx: r(0.7, 1.5), sy: r(0.7, 1.5), sz: r(0.7, 1.5), bend: r(-1, 1), twist: r(-1.2, 1.2), taper: r(-0.4, 0.4), bumps: r(-0.3, 0.3), wobble: r(0, 0.12), wfreq: r(2, 5), box: Math.random() < 0.5 ? 0 : r(0, 0.8) };
+}
+function bindRange(id, key, onChange, fmtFn = (v) => v) {
+  const el = $(id), out = el.nextElementSibling;
+  el.value = ui[key]; if (out) out.value = fmtFn(ui[key]);
+  el.addEventListener('input', () => { ui[key] = parseFloat(el.value); if (out) out.value = fmtFn(ui[key]); onChange(); });
+}
+function updateVisibility() {
+  $('estOptions').hidden = ui.mapMode !== 'est';
+  $('eigOptions').hidden = ui.viz !== 'eig';
+  $('transferOptions').hidden = ui.viz !== 'transfer';
+  $('p2pOptions').hidden = ui.viz !== 'p2p';
+  $('brushRow').hidden = ui.tool !== 'sculpt';
+  $('eigIndex').max = ui.k; if (ui.eigIndex > ui.k) { ui.eigIndex = ui.k; $('eigIndex').value = ui.k; $('eigIndex').nextElementSibling.value = ui.k; }
+  document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('active', b.dataset.tool === ui.tool));
+  $('toolHint').textContent = { orbit: 'Drag to orbit, scroll to zoom. Shift + drag sculpts in any tool.', sculpt: 'Drag on a surface to pull it; the eigenbases and C recompute on release.', move: 'Drag to translate, Alt + drag (or right button) to rotate. Rigid motions leave C unchanged.' }[ui.tool];
+  viewports.forEach(v => { v.canvas.dataset.tool = ui.tool; });
+}
+function init() {
+  viewports.push(makeViewport(shapes[0], $('canvasA')), makeViewport(shapes[1], $('canvasB')));
+  shapes.forEach(s => { s.worker = makeWorker(s); });
+  buildParamPanel(shapes[0]); buildParamPanel(shapes[1]);
+  buildPosePanel(shapes[0]); buildPosePanel(shapes[1]);
+
+  $('baseKind').addEventListener('change', rebuildBase);
+  $('resolution').addEventListener('change', rebuildBase);
+  for (const s of shapes) {
+    $('reset' + s.name).addEventListener('click', () => { s.sculpt.fill(0); s.pose = defaultPose(); syncPosePanel(s); setParams(s, defaultParams()); });
+    $('resetPose' + s.name).addEventListener('click', () => { s.pose = defaultPose(); syncPosePanel(s); composePositions(s); viewports[s.idx].refreshPositions(); if (ui.viz === 'transfer' && s.idx === 0) updateColors(); });
+    $('random' + s.name).addEventListener('click', () => setParams(s, randomParams()));
+    $('clearSculpt' + s.name).addEventListener('click', () => { s.sculpt.fill(0); composePositions(s); viewports[s.idx].refreshPositions(); requestEig(s, 50); });
+  }
+  $('swapAB').addEventListener('click', () => {
+    const pa = shapes[0].params, pb = shapes[1].params, sa = shapes[0].sculpt, qa = shapes[0].pose;
+    shapes[0].sculpt = shapes[1].sculpt; shapes[1].sculpt = sa;
+    shapes[0].pose = shapes[1].pose; shapes[1].pose = qa; syncPosePanel(shapes[0]); syncPosePanel(shapes[1]);
+    setParams(shapes[0], pb); setParams(shapes[1], pa);
+  });
+  bindRange('kSlider', 'k', () => { updateVisibility(); recomputeMap(); });
+  document.querySelectorAll('input[name=mapMode]').forEach(r => r.addEventListener('change', () => { ui.mapMode = r.value; updateVisibility(); viewports.forEach(v => v.updateMarkers()); recomputeMap(); }));
+  bindRange('muSlider', 'muLog', () => { ui.mu = Math.pow(10, ui.muLog); recomputeMap(); }, (v) => Math.pow(10, v).toPrecision(2));
+  ui.muLog = Math.log10(ui.mu); $('muSlider').value = ui.muLog; $('muSlider').nextElementSibling.value = ui.mu.toPrecision(2);
+  bindRange('landmarks', 'nLandmarks', () => { viewports.forEach(v => v.updateMarkers()); recomputeMap(); });
+  $('icp').addEventListener('change', (e) => { ui.icp = e.target.checked; recomputeMap(); });
+  $('alignSigns').addEventListener('change', (e) => { ui.alignSigns = e.target.checked; recomputeMap(); });
+  $('vizMode').addEventListener('change', (e) => { ui.viz = e.target.value; map.hover = null; updateVisibility(); viewports.forEach(v => v.updateMarkers()); drawHeatmap(); updateColors(); });
+  bindRange('eigIndex', 'eigIndex', () => { map.locked = null; drawHeatmap(); updateColors(); });
+  $('funcType').addEventListener('change', (e) => { ui.funcType = e.target.value; updateColors(); });
+  $('showProjected').addEventListener('change', (e) => { ui.showProjected = e.target.checked; updateColors(); });
+  document.querySelectorAll('input[name=p2pDisplay]').forEach(r => r.addEventListener('change', () => { ui.p2pDisplay = r.value; updateColors(); }));
+  document.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => { ui.tool = b.dataset.tool; updateVisibility(); }));
+  bindRange('brush', 'brush', () => {});
+  $('linkViews').addEventListener('change', (e) => { ui.linkViews = e.target.checked; });
+  $('wireframe').addEventListener('change', (e) => { ui.wireframe = e.target.checked; viewports.forEach(v => { v.wire.visible = ui.wireframe; }); });
+  $('aboutBtn').addEventListener('click', () => { const a = $('about'); a.hidden = !a.hidden; $('aboutBtn').setAttribute('aria-expanded', String(!a.hidden)); });
+
+  const cmap = $('cmap');
+  const cellAt = (e) => {
+    if (!map.C) return null;
+    const r = cmap.getBoundingClientRect(), cell = Math.min(r.width, r.height) / ui.k;
+    const j = Math.floor((e.clientX - r.left) / cell), i = Math.floor((e.clientY - r.top) / cell);
+    return (i >= 0 && j >= 0 && i < ui.k && j < ui.k) ? { i, j } : null;
+  };
+  cmap.addEventListener('pointermove', (e) => { const c = cellAt(e); if (!c && !map.hover) return; map.hover = c; drawHeatmap(); if (ui.viz === 'eig') updateColors(); });
+  cmap.addEventListener('pointerleave', () => { map.hover = null; drawHeatmap(); if (ui.viz === 'eig') updateColors(); });
+  cmap.addEventListener('click', (e) => { const c = cellAt(e); map.locked = (c && map.locked && map.locked.i === c.i && map.locked.j === c.j) ? null : c; drawHeatmap(); if (ui.viz === 'eig') updateColors(); });
+
+  window.addEventListener('resize', () => { drawHeatmap(); drawEigChart(); });
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { drawHeatmap(); drawEigChart(); });
+  new MutationObserver(() => { drawHeatmap(); drawEigChart(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  updateVisibility();
+  rebuildBase();
+  syncParamPanel(shapes[1]);
+  (function loop() { for (const v of viewports) v.render(); requestAnimationFrame(loop); })();
+}
+window.FMB = { shapes, ui, map, get base() { return base; }, recomputeMap, updateColors };
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+
+</script>
+
+</body>
+</html>

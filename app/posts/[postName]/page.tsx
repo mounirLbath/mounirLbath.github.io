@@ -2,6 +2,8 @@ import LinkButton from "@/app/Components/LinkButton";
 import GetAllPostNames from "@/app/Components/PostComponents/GetAllPostNames";
 import MarkdownPost from "@/app/Components/PostComponents/MarkdownPost";
 import React from "react";
+import type { Metadata } from "next";
+import ReadMdPost from "@/app/Components/PostComponents/ReadMdPost";
 
 interface Props {
   params: Promise<{ postName: string }>;
@@ -15,6 +17,11 @@ export async function generateStaticParams() {
   }));
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { data } = await ReadMdPost((await params).postName);
+  return { title: data.title, description: data.description };
+}
+
 export const dynamic = "force-static";
 export const revalidate = 3600;
 
@@ -22,10 +29,10 @@ const page = async ({ params }: Props) => {
   const postName = (await params).postName;
   return (
     <div>
-      <LinkButton href="/posts">&#10554; Back to Posts</LinkButton>
+      <LinkButton href="/posts" className="text-sm">← All posts</LinkButton>
       <MarkdownPost postName={postName} />
-      <a className="text-blue-500 hover:text-blue-900 " href="#">
-        Back to top{" "}
+      <a className="text-sm text-link hover:text-link-hover" href="#">
+        ↑ Back to top
       </a>
     </div>
   );

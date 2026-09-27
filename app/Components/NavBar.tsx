@@ -1,75 +1,46 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
-import NavBarButton from "./NavBarButton";
+import React from "react";
+import { usePathname } from "next/navigation";
+import ThemeToggle from "./ThemeToggle";
+
+const navLinks = [
+  { display: "Home", path: "" },
+  { display: "Posts", path: "posts" },
+  { display: "Projects", path: "projects" },
+  { display: "Photos", path: "photos" },
+];
 
 const NavBar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const pathname = usePathname();
+  const section = pathname.split("/")[1];
 
   return (
-    <nav className="fixed w-full top-0 flex-col items-center justify-between  bg-background/40 backdrop-blur-lg z-10 py-4">
-      <div className="top-0  flex items-center justify-between mx-10">
-        <div className="font-mono font-black text-blue-950 text-2xl">
-          <Link href={"/"}>ML</Link>
-        </div>
-        <div className="hidden sm:block sm:ml-6">
-          <div className="flex space-x-15">
-            <NavBarButton toggleMenu={toggleMenu} />
-          </div>
-        </div>
-        <div className="sm:hidden">
-          <button
-            onClick={toggleMenu}
-            type="button"
-            className="inline-flex cursor-pointer items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 duration-300 ease-in-out "
-            aria-controls="mobile-menu"
-            aria-expanded={isMenuOpen ? "true" : "false"}
-          >
-            <span className="sr-only">Open main menu</span>
-            {/* Mobile menu icon */}
-            <svg
-              className={(isMenuOpen ? "hidden" : "block") + " h-6 w-6"}
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
+    <nav className="fixed w-full top-0 z-10 bg-background/85 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+      <div className="mx-auto max-w-3xl px-5 h-14 flex items-center justify-between">
+        <Link
+          href="/"
+          className="font-mono font-black text-blue-950 dark:text-blue-200 text-2xl"
+        >
+          ML
+        </Link>
+        <div className="flex items-center gap-4 sm:gap-6 text-sm">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              href={"/" + link.path}
+              className={
+                "hover:text-link duration-200 " +
+                (section === link.path
+                  ? "text-link"
+                  : "text-gray-600 dark:text-gray-400")
+              }
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-            {/* Mobile close icon */}
-            <svg
-              className={(isMenuOpen ? "block" : "hidden") + " h-6 w-6"}
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
+              {link.display}
+            </Link>
+          ))}
+          <ThemeToggle />
         </div>
-      </div>
-      {/* Mobile menu, show/hide based on menu state */}
-      <div
-        className={`${
-          isMenuOpen ? "" : "h-0 -translate-x-full"
-        } transition-transform  duration-300 ease-in-out  sm:hidden flex-col mx-10`}
-        id="mobile-menu"
-      >
-        <NavBarButton toggleMenu={toggleMenu} />
       </div>
     </nav>
   );

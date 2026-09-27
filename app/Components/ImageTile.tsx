@@ -4,7 +4,7 @@ import Image from "next/image";
 
 interface ImageTileProps {
   index: number;
-  id: string;
+  src: string;
   description?: string;
   date?: string;
   properties?: string[];
@@ -13,7 +13,7 @@ interface ImageTileProps {
 
 const ImageTile: React.FC<ImageTileProps> = ({
   index,
-  id,
+  src,
   description = "",
   date = "",
   properties = [],
@@ -25,11 +25,12 @@ const ImageTile: React.FC<ImageTileProps> = ({
     <div>
       <div className="relative overflow-hidden group">
         <Image
-          src={"https://drive.google.com/thumbnail?sz=w1000&id=" + id}
+          src={src}
           alt={description + " (" + location + ")"}
-          quality={100}
-          width={1000}
-          height={100}
+          quality={85}
+          width={1600}
+          height={1067}
+          sizes="(min-width: 1024px) 384px, 90vw"
           className="w-full h-auto cursor-pointer transform transition-transform duration-300 ease-in-out lg:group-hover:scale-110"
           priority={index < 4}
           onClick={() => {

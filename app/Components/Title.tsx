@@ -3,24 +3,27 @@ import React from "react";
 interface Props {
   children?: React.ReactNode;
   className?: string;
-  paddingBottom?: boolean;
+  level?: 1 | 2;
 }
 
-const Title = ({
-  children = "",
-  className = "",
-  paddingBottom = true,
-}: Props) => {
+// level 1: page title, level 2: section heading
+const Title = ({ children = "", className = "", level = 2 }: Props) => {
+  if (level === 1) {
+    return (
+      <h1 className={"text-3xl font-semibold tracking-tight mb-4 " + className}>
+        {children}
+      </h1>
+    );
+  }
   return (
-    <h1
+    <h2
       className={
-        "text-3xl font-mono pt-10 " +
-        (paddingBottom ? "pb-10 " : "") +
+        "text-lg font-semibold tracking-tight mt-14 mb-4 " +
         className
       }
     >
       {children}
-    </h1>
+    </h2>
   );
 };
 

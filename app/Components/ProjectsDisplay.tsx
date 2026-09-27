@@ -166,13 +166,6 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
         </>
       ),
     },
-    {
-      title: "Smile Counter",
-      tags: ["NextJS", "Supabase", "Tailwind"],
-      imageSrc: "/projects/smile.png",
-      link: "https://smile-counter.com",
-      description: <>A simple web app to share and spread smiles!</>,
-    },
 
     {
       title: "Multiplayer Agar.io",
@@ -275,34 +268,6 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
       ),
     },
     {
-      title: "Gift Generator",
-      tags: ["NextJS", "Tailwind"],
-      link: "https://mounirlbath.github.io/gift-generator",
-      ghLink: "https://github.com/mounirLbath/gift-generator",
-      imageSrc: "/projects/gift_generator.png",
-      description: (
-        <>
-          A very cool website to make your friends smile. You can generate gifts
-          on{" "}
-          <LinkButton
-            href="https://mounirlbath.github.io/gift-generator/generate"
-            target="blank"
-          >
-            this page
-          </LinkButton>{" "}
-          or directly send the basic &quot;Happy Birthday&quot; gift on{" "}
-          <LinkButton
-            href="https://mounirlbath.github.io/gift-generator"
-            target="blank"
-          >
-            this page
-          </LinkButton>
-          .
-        </>
-      ),
-    },
-
-    {
       title: "Fractals",
       tags: ["Python", "Blender"],
       ghLink: "https://github.com/mounirLbath/Mandelbrot-set-and-Fractals",
@@ -382,7 +347,7 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
 
   return (
     <>
-      <div className="lg:grid grid-cols-2 gap-5 ">
+      <div>
         {projects.map(
           (project, index) =>
             index < nbShown && <ProjectTile key={index} {...project} />
@@ -390,12 +355,12 @@ const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
       </div>
       {nbShown < projects.length && (
         <button
-          className="text-lg text-blue-500 hover:text-blue-900 cursor-pointer duration-300 ease-in-out "
+          className="text-sm text-link hover:text-link-hover cursor-pointer"
           onClick={() => {
-            setNbShown(Math.min(projects.length, nbShown + 2));
+            setNbShown(projects.length);
           }}
         >
-          Load more
+          Show all {projects.length} projects
         </button>
       )}
     </>
