@@ -21,11 +21,11 @@ export const metadata: Metadata = {
     template: "%s | Mounir Lbath",
   },
   description:
-    "Mounir Lbath, student researcher at École Polytechnique working on geometry and machine learning: shape correspondence, spectral methods and 3D vision.",
+    "Mounir Lbath, student researcher at École Polytechnique working on geometry, computer vision and machine learning: 3D vision, world models and neural rendering.",
   openGraph: {
     title: "Mounir Lbath",
     description:
-      "Student researcher at École Polytechnique working on geometry and machine learning.",
+      "Student researcher at École Polytechnique working on geometry, computer vision and machine learning.",
     type: "website",
   },
 };

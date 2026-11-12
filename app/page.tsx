@@ -38,9 +38,9 @@ export default function Home() {
             . I currently work with Prof. Maks Ovsjanikov at LIX on functional maps and the spectral geometry of attention.
           </p>
           <p className="mb-5">
-            I am interested in geometry and machine learning: shape
-            correspondence, spectral methods, 3D computer vision and neural
-            rendering, and more generally in deep learning for the 3D world.
+            I am interested in geometry, computer vision and machine
+            learning: 3D vision, world models, neural rendering, and more
+            generally in deep learning for the 3D world.
           </p>
           <p className="text-sm">
             {profileLinks.map((link, index) => (
