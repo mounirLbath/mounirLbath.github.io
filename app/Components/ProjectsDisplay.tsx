@@ -1,338 +1,288 @@
-"use client";
-import React, { useState } from "react";
+import React from "react";
 import ProjectTile from "./ProjectTile";
 import LinkButton from "./LinkButton";
 
-interface Props {
-  nbToShow?: number;
-}
+const amine = (
+  <LinkButton href="https://www.linkedin.com/in/amine-lbath" target="blank">
+    my brother Amine
+  </LinkButton>
+);
 
-const ProjectsDisplay = ({ nbToShow = -1 }: Props) => {
-  const projects = [
-    {
-      title: "MindStack",
-      tags: ["React", "Gemini Nano API", "Embedder"],
-      imageSrc: "/projects/MindStack2.png",
-      link: "https://devpost.com/software/mindstack-7txoal?ref_content=user-portfolio&ref_feature=in_progress",
-      ghLink:"https://github.com/mounirLbath/MindStack",
-      description: <>MindStack is a Chrome extension that turns your browser into your developer memory, automatically building cheat sheets and resurfacing your own fixes right inside Google Search. All local. (Chrome Built-In AI Challenge 2025, teamed up with <LinkButton
-            href="https://github.com/AmL-Dev"
-            target="blank"
-          >
-            Amine
-          </LinkButton>)</>,
-    },
-        {
-      title: "GitBeat",
-      tags: ["NextJS", "Supabase", "OpenAI API", "Dust.tt","Suno","Tailwind"],
-      imageSrc: "/projects/Gitbeat.png",
-      link: "https://gitbeat.vercel.app/",
-      ghLink:"https://github.com/imbjdd/gitbeat",
-      description: <>GitBeat is a web application that transforms GitHub repositories into music based on their structure, contributors, and development patterns.
-      <br/>(Paris Tech:Europe Hackaton <div className="font-bold inline">viral content winner</div>, September 2025, Team: <LinkButton
-            href="https://github.com/imbjdd"
-            target="blank"
-          >
-            Salim
-          </LinkButton> and <LinkButton
-            href="https://github.com/inin-zou"
-            target="blank"
-          >
-            Yongkang
-          </LinkButton>).</>,
-    },
-    
-    {
-      title: "The Ultimate Viber",
-      tags: ["NextJS", "Mistral API", "Redis", "ElevenLabs"],
-      imageSrc: "/projects/UltimateViber.png",
-      link: "https://vibe.takara.ai/",
-      description: <>The Ultimate Viber is a vibe coding learning website (with games to learn prompt engineering and code verification)
-      <br/>(Paris Tech:Europe Hackaton <div className="font-bold inline">track winner</div>, May 2025, Team: <LinkButton
-            href="https://github.com/404missinglink"
-            target="blank"
-          >
-            Jordan
-          </LinkButton>, <LinkButton
-            href="https://github.com/Jacob-Kenney"
-            target="blank"
-          >
-            Jacob
-          </LinkButton>, and <LinkButton
-            href="https://huggingface.co/Tonic"
-            target="blank"
-          >
-            Joseph
-          </LinkButton>
-
-          ).</>,
-    },
-    {
-      title: "Sky Delivery",
-      tags: ["Unity", "C#"],
-      link: "https://play.google.com/store/apps/details?id=com.AandMstudios.SkyDelivery",
-      websiteLink: "http://skydelivery-game.epizy.com/",
-      youtubeLink: "https://www.youtube.com/watch?v=A3SGwCVOcGs",
-      imageSrc: "/projects/sky_delivery.png",
-      description: (
-        <>
-          A mobile game published on the{" "}
-          <LinkButton
-            href="https://play.google.com/store/apps/details?id=com.AandMstudios.SkyDelivery"
-            target="blank"
-          >
-            Play Store
-          </LinkButton>{" "}
-          with 3k+ downloads. Co-created in 9th grade with{" "}
-          <LinkButton
-            href="https://www.linkedin.com/in/amine-lbath"
-            target="blank"
-          >
-            my brother Amine
-          </LinkButton>
-          .
-        </>
-      ),
-    },
-
-    
-    {
-      title: "Steady Box",
-      tags: ["Unity", "C#"],
-      link: "https://play.google.com/store/apps/details?id=com.AandMstudios.SteadyBox",
-      websiteLink: "https://steady-box-game.netlify.app/",
-      youtubeLink: "https://www.youtube.com/shorts/--9WWweBhEM",
-      imageSrc: "/projects/steady_box.png",
-      description: (
-        <>
-          A mobile game published on the{" "}
-          <LinkButton
-            href="https://play.google.com/store/apps/details?id=com.AandMstudios.SteadyBox"
-            target="blank"
-          >
-            Play Store
-          </LinkButton>{" "}
-          with 100+ downloads. I created this back in 10th grade alongside{" "}
-          <LinkButton
-            href="https://www.linkedin.com/in/amine-lbath"
-            target="blank"
-          >
-            my brother Amine.
-          </LinkButton>
-        </>
-      ),
-    },
-    
-
-    {
-      title: "Instant Listing",
-      tags: ["Dart", "Flutter", "Gemini AI"],
-      youtubeLink: "https://www.youtube.com/watch?v=HS4V52jAG9s",
-      description: (
-        <>
-          An AI-powered mobile app for generating online listings, coming soon
-          to the Apple Store and Google Play Store. Co-built with{" "}
-          <LinkButton
-            href="https://www.linkedin.com/in/amine-lbath"
-            target="blank"
-          >
-            my brother Amine
-          </LinkButton>{" "}
-          originally for the{" "}
-          <LinkButton
-            target="blank"
-            href="https://ai.google.dev/competition/projects/listing-ai"
-          >
-            Gemini API competition.
-          </LinkButton>
-        </>
-      ),
-    },
-    {
-      title: "Raytracer",
-      tags: ["Python", "OOP"],
-      imageSrc: "/projects/SpecularDemo.png",
-      ghLink: "https://github.com/mounirLbath/Raytracer",
-      description: (
-        <>
-          A{" "}
-          <LinkButton
-            target="blank"
-            href="https://en.wikipedia.org/wiki/Ray_tracing_(graphics)"
-          >
-            raytracer
-          </LinkButton>{" "}
-          built from scratch in Python
-        </>
-      ),
-    },
-
-    {
-      title: "Multiplayer Agar.io",
-      tags: ["Python", "Sockets", "OOP"],
-      ghLink: "https://github.com/mounirLbath/Multiplayer_CellEating",
-      description: (
-        <>
-          A multiplayer{" "}
-          <LinkButton
-            target="blank"
-            href="https://en.wikipedia.org/wiki/Agar.io"
-          >
-            Agar.io
-          </LinkButton>{" "}
-          implementation in Python. I got the idea for this project from this{" "}
-          <LinkButton
-            target="blank"
-            href="https://www.youtube.com/watch?v=SR8xeaRXLcg"
-          >
-            youtube video
-          </LinkButton>
-          .
-        </>
-      ),
-    },
-    {
-      title: "Minimax Ultimate Tic-Tac-Toe",
-      tags: ["Python", "Minimax"],
-      ghLink: "https://github.com/mounirLbath/Minimax-Ultimate-Tic-Tac-Toe",
-      description: (
-        <>
-          A{" "}
-          <LinkButton
-            href="https://en.wikipedia.org/wiki/Minimax"
-            target="blank"
-          >
-            minimax
-          </LinkButton>{" "}
-          AI agent that plays at the{" "}
-          <LinkButton
-            href="https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe"
-            target="blank"
-          >
-            Ultimate Tic-Tac-Toe
-          </LinkButton>{" "}
-          (awesome game by the way).
-        </>
-      ),
-    },
-    
-
-    {
-      title: "Physics Engine",
-      tags: ["Python", "Pygame", "OOP"],
-      ghLink: "https://github.com/mounirLbath/Physics_Engine",
-      imageSrc: "/projects/physics_engine.png",
-      description: (
-        <>
-          A Physics engine built from scratch using{" "}
-          <LinkButton
-            href="https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion"
-            target="blank"
-          >
-            Newton&apos;s laws
-          </LinkButton>{" "}
-          and{" "}
-          <LinkButton
-            target="blank"
-            href="https://en.wikipedia.org/wiki/Euler_method"
-          >
-            Euler&apos;s method for differential equations.
-          </LinkButton>{" "}
-          It can be used for many simulations, such as a small basketball game
-          you will find on the GitHub repository.
-        </>
-      ),
-    },
-    {
-      title: "Minesweeper",
-      tags: ["Python", "Pygame", "OOP"],
-      imageSrc: "/projects/minesweeper.png",
-      ghLink: "https://github.com/mounirLbath/Minesweeper-game",
-      description: <>A minesweeper game.</>,
-    },
-    {
-      title: "Conway's Game of Life",
-      tags: ["Python", "Pygame"],
-      imageSrc: "/projects/conway.png",
-      ghLink: "https://github.com/mounirLbath/Conway_game_of_life",
-      description: (
-        <>
-          <LinkButton
-            href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
-            target="blank"
-          >
-            Conway&apos;s game of life
-          </LinkButton>{" "}
-          simulation with a functional GUI.{" "}
-        </>
-      ),
-    },
-    {
-      title: "Fractals",
-      tags: ["Python", "Blender"],
-      ghLink: "https://github.com/mounirLbath/Mandelbrot-set-and-Fractals",
-      imageSrc: "/projects/fractals.png",
-      description: (
-        <>
-          A python script to draw the{" "}
-          <LinkButton
-            href="https://en.wikipedia.org/wiki/Mandelbrot_set"
-            target="blank"
-          >
-            Mandelbrot set
-          </LinkButton>{" "}
-          and a Blender python screen to generate a 3D{" "}
-          <LinkButton
-            href="https://en.wikipedia.org/wiki/Menger_sponge"
-            target="blank"
-          >
-            Menger sponge.
-          </LinkButton>
-        </>
-      ),
-    },
-    {
-      title: "Sports Game",
-      tags: ["JS", "p5.js"],
-      link: "https://www.khanacademy.org/computer-programming/sports/6347487175573504",
-      imageSrc: "/projects/sports.png",
-      description: (
-        <>
-          One of my very first computer programs. My brother and I created the
-          first version, which only featured the soccer game, in just two weeks
-          on Khan Academy. I was 8 years old, and he was 12 at the time. The
-          code itself has a cute and naive style, with variable names like
-          TheScene, scene, sceneb, SCENE, ScEnE, sCeNe, and ScenE. Despite the
-          playful approach to coding, the game still remains awesome even 12
-          years later.
-        </>
-      ),
-    },
-  ];
-
-  const [nbShown, setNbShown] = useState(
-    nbToShow == -1 ? projects.length : nbToShow
-  );
-
-  return (
-    <>
-      <div>
-        {projects.map(
-          (project, index) =>
-            index < nbShown && <ProjectTile key={index} {...project} />
-        )}
-      </div>
-      {nbShown < projects.length && (
-        <button
-          className="text-sm text-link hover:text-link-hover cursor-pointer"
-          onClick={() => {
-            setNbShown(projects.length);
-          }}
+const graphics = [
+  {
+    title: "Gaussian Splatting",
+    year: "2026",
+    tags: ["C++", "OpenGL", "GLSL", "Bullet"],
+    videoSrc: "/projects/gaussian_splatting.mp4",
+    imageSrc: "/projects/gaussian_splatting.jpg",
+    ghLink: "https://github.com/mounirLbath/Gaussian-Splatting",
+    link: "https://drive.google.com/file/d/1Lg1oc6Tm3o30cZ6-ltT4_NxKR8qD--nG/view",
+    description: (
+      <>
+        A real-time{" "}
+        <LinkButton
+          href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/"
+          target="blank"
         >
-          Show all {projects.length} projects
-        </button>
-      )}
-    </>
+          3D Gaussian Splatting
+        </LinkButton>{" "}
+        renderer, from scratch in C++ and OpenGL. On a second branch, the splats
+        become rigid bodies you can drop and grab (Bullet physics,{" "}
+        <LinkButton href="https://arxiv.org/abs/2506.24096" target="blank">
+          MILo
+        </LinkButton>{" "}
+        meshes as colliders). With{" "}
+        <LinkButton href="https://github.com/octavegg" target="blank">
+          Octave Gaspard
+        </LinkButton>
+        , on Prof. Damien Rohmer&apos;s{" "}
+        <LinkButton href="https://github.com/drohmer/cgp" target="blank">
+          CGP
+        </LinkButton>{" "}
+        library.
+      </>
+    ),
+  },
+  {
+    title: "Knowledge Tracing (research project)",
+    year: "2025–26",
+    tags: ["PyTorch", "Knowledge tracing", "MCMC"],
+    imageSrc: "/projects/knowledge_tracing_graph.jpg",
+    ghLink: "https://github.com/mounirLbath/Learn-CP-PSC",
+    description: (
+      <>
+        Knowledge tracing and adaptive learning, with Dr. Jill-Jênn Vie (Inria
+        SODA). Tabular foundation models as in-context knowledge tracers
+        (first-author paper, AIED 2026), AKT reimplemented from scratch in
+        PyTorch, and an MCMC algorithm over a prerequisite poset to locate a
+        learner in fewer questions.
+      </>
+    ),
+  },
+  {
+    title: "Raytracer",
+    year: "2022",
+    tags: ["Python"],
+    imageSrc: "/projects/SpecularDemo.png",
+    ghLink: "https://github.com/mounirLbath/Raytracer",
+    preAgentic: true,
+    description: <>A raytracer from scratch in Python.</>,
+  },
+  {
+    title: "Physics Engine",
+    year: "2022",
+    tags: ["Python", "Pygame"],
+    imageSrc: "/projects/physics_engine.gif",
+    ghLink: "https://github.com/mounirLbath/Physics_Engine",
+    preAgentic: true,
+    description: (
+      <>
+        A physics engine from scratch (Newton&apos;s laws, Euler integration).
+      </>
+    ),
+  },
+  {
+    title: "Fractals",
+    year: "2022",
+    tags: ["Python", "Blender"],
+    imageSrc: "/projects/fractals.png",
+    ghLink: "https://github.com/mounirLbath/Mandelbrot-set-and-Fractals",
+    preAgentic: true,
+    description: (
+      <>
+        The Mandelbrot set in Python, and a 3D Menger sponge generated by a
+        Blender script.
+      </>
+    ),
+  },
+];
+
+const apps = [
+  {
+    title: "MindStack",
+    year: "2025",
+    tags: ["React", "Gemini Nano API", "Embedder"],
+    imageSrc: "/projects/MindStack2.png",
+    link: "https://devpost.com/software/mindstack-7txoal?ref_content=user-portfolio&ref_feature=in_progress",
+    ghLink: "https://github.com/mounirLbath/MindStack",
+    description: (
+      <>
+        A Chrome extension that builds cheat sheets from your browsing and
+        resurfaces your own fixes in Google Search, fully local. Chrome Built-In
+        AI Challenge 2025, with{" "}
+        <LinkButton href="https://github.com/AmL-Dev" target="blank">
+          Amine
+        </LinkButton>
+        .
+      </>
+    ),
+  },
+  {
+    title: "GitBeat",
+    year: "2025",
+    tags: ["NextJS", "Supabase", "OpenAI API", "Dust.tt", "Suno", "Tailwind"],
+    imageSrc: "/projects/Gitbeat.png",
+    ghLink: "https://github.com/imbjdd/gitbeat",
+    description: (
+      <>
+        Turns GitHub repositories into music. Paris Tech:Europe hackathon,{" "}
+        <span className="font-bold">viral content winner</span> (September
+        2025), with{" "}
+        <LinkButton href="https://github.com/imbjdd" target="blank">
+          Salim
+        </LinkButton>{" "}
+        and{" "}
+        <LinkButton href="https://github.com/inin-zou" target="blank">
+          Yongkang
+        </LinkButton>
+        .
+      </>
+    ),
+  },
+  {
+    title: "The Ultimate Viber",
+    year: "2025",
+    tags: ["NextJS", "Mistral API", "Redis", "ElevenLabs"],
+    imageSrc: "/projects/UltimateViber.png",
+    description: (
+      <>
+        Games to learn vibe coding: prompt engineering and code verification.
+        Paris Tech:Europe hackathon,{" "}
+        <span className="font-bold">track winner</span> (May 2025), with{" "}
+        <LinkButton href="https://github.com/404missinglink" target="blank">
+          Jordan
+        </LinkButton>
+        ,{" "}
+        <LinkButton href="https://github.com/Jacob-Kenney" target="blank">
+          Jacob
+        </LinkButton>{" "}
+        and{" "}
+        <LinkButton href="https://huggingface.co/Tonic" target="blank">
+          Joseph
+        </LinkButton>
+        .
+      </>
+    ),
+  },
+  {
+    title: "Instant Listing",
+    tags: ["Dart", "Flutter", "Gemini AI"],
+    imageSrc: "/projects/instant_listing.jpg",
+    youtubeLink: "https://www.youtube.com/watch?v=HS4V52jAG9s",
+    description: (
+      <>An LLM-powered mobile app that writes online listings, with {amine}.</>
+    ),
+  },
+];
+
+const games = [
+  {
+    title: "Sky Delivery",
+    tags: ["Unity", "C#"],
+    imageSrc: "/projects/sky_delivery.png",
+    websiteLink: "http://skydelivery-game.epizy.com/",
+    youtubeLink: "https://www.youtube.com/watch?v=A3SGwCVOcGs",
+    description: (
+      <>
+        Mobile game, 3k+ downloads on the Play Store. Made in 9th grade with{" "}
+        {amine}.
+      </>
+    ),
+  },
+  {
+    title: "Steady Box",
+    tags: ["Unity", "C#"],
+    imageSrc: "/projects/steady_box.png",
+    websiteLink: "https://steady-box-game.netlify.app/",
+    youtubeLink: "https://www.youtube.com/shorts/--9WWweBhEM",
+    description: (
+      <>
+        Mobile game, 100+ downloads on the Play Store. Made in 10th grade with{" "}
+        {amine}.
+      </>
+    ),
+  },
+  {
+    title: "Multiplayer Agar.io",
+    year: "2024",
+    tags: ["Python", "Sockets"],
+    imageSrc: "/projects/agar.gif",
+    ghLink: "https://github.com/mounirLbath/Multiplayer_CellEating",
+    description: (
+      <>
+        A multiplayer Agar.io clone built from scratch in Python, over sockets.
+      </>
+    ),
+  },
+  {
+    title: "Minimax Ultimate Tic-Tac-Toe",
+    year: "2022",
+    tags: ["Python", "Minimax"],
+    imageSrc: "/projects/minimax.gif",
+    ghLink: "https://github.com/mounirLbath/Minimax-Ultimate-Tic-Tac-Toe",
+    description: <>A minimax agent that plays Ultimate Tic-Tac-Toe.</>,
+  },
+  {
+    title: "Minesweeper",
+    year: "2022",
+    tags: ["Python", "Pygame"],
+    imageSrc: "/projects/minesweeper.png",
+    ghLink: "https://github.com/mounirLbath/Minesweeper-game",
+    description: <>A minesweeper game.</>,
+  },
+  {
+    title: "Conway's Game of Life",
+    year: "2022",
+    tags: ["Python", "Pygame"],
+    imageSrc: "/projects/conway.png",
+    ghLink: "https://github.com/mounirLbath/Conway_game_of_life",
+    description: <>Conway&apos;s Game of Life, with a GUI.</>,
+  },
+  {
+    title: "Sports Game",
+    tags: ["JS", "p5.js"],
+    imageSrc: "/projects/sports.png",
+    link: "https://www.khanacademy.org/computer-programming/sports/6347487175573504",
+    description: (
+      <>
+        One of my first programs, made on Khan Academy at 8 with my brother (he
+        was 12).
+      </>
+    ),
+  },
+].map((game) => ({ ...game, preAgentic: true }));
+
+// most visual first
+const order = [
+  "Gaussian Splatting",
+  "Knowledge Tracing (research project)",
+  "Raytracer",
+  "Sky Delivery",
+  "Steady Box",
+  "Physics Engine",
+  "Multiplayer Agar.io",
+  "Minimax Ultimate Tic-Tac-Toe",
+  "Minesweeper",
+  "Conway's Game of Life",
+  "MindStack",
+  "GitBeat",
+  "The Ultimate Viber",
+  "Instant Listing",
+  "Fractals",
+  "Sports Game",
+];
+const byTitle = new Map(
+  [...graphics, ...apps, ...games].map((p) => [p.title, p] as const),
+);
+
+const ProjectsDisplay = () => {
+  return (
+    <div className="mt-6">
+      {order.map((title) => {
+        const p = byTitle.get(title)!;
+        return <ProjectTile key={title} {...p} />;
+      })}
+    </div>
   );
 };
 

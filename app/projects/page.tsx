@@ -11,8 +11,8 @@ const page = () => {
   return (
     <div>
       <Title level={1}>Projects</Title>
-      <p className="mb-10 text-gray-600 dark:text-gray-400">
-        Hackathon projects, games and apps I have built along the way.
+      <p className="mb-4 text-gray-600 dark:text-gray-400">
+        Graphics, research, games and apps I have built along the way.
       </p>
       <ProjectsDisplay />
     </div>
