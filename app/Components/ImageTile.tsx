@@ -26,7 +26,7 @@ const ImageTile: React.FC<ImageTileProps> = ({
       <div className="relative overflow-hidden group">
         <Image
           src={src}
-          alt={description + " (" + location + ")"}
+          alt={location ? description + " (" + location + ")" : description}
           quality={85}
           width={1600}
           height={1067}
